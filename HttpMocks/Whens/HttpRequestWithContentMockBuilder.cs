@@ -17,6 +17,7 @@ namespace HttpMocks.Whens
             if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(nameof(headerName));
 
             httpRequestMock.Headers[headerName] = headerValue;
+
             return this;
         }
 

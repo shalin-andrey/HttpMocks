@@ -1,6 +1,6 @@
-﻿using System.Collections.Specialized;
+using System.Collections.Specialized;
 
-namespace HttpMocks.Thens
+namespace HttpMocks
 {
     public class HttpResponseInfo
     {

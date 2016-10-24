@@ -43,14 +43,14 @@ namespace HttpMocks
         {
             while (stated)
             {
+                var context = await SafeGetContextAsync().ConfigureAwait(false);
+                if (context == null)
+                {
+                    continue;
+                }
+
                 try
                 {
-                    var context = await GetContextAsync().ConfigureAwait(false);
-                    if (context == null)
-                    {
-                        continue;
-                    }
-
                     var requestContentBytes = await ReadInputStreamToEndAsync(context.Request.ContentLength64, context.Request.InputStream).ConfigureAwait(false);
                     var httpRequestInfo = BuildHttpRequestInfo(context, requestContentBytes);
                     var httpResponseInfo = ProcessRequest(httpRequestInfo);
@@ -58,12 +58,16 @@ namespace HttpMocks
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    verificationMockResults.Add(new VerificationResult {Message = $"{e.Message}"});
+                }
+                finally
+                {
+                    context.Response.Close();
                 }
             }
         }
 
-        private async Task<HttpListenerContext> GetContextAsync()
+        private async Task<HttpListenerContext> SafeGetContextAsync()
         {
             try
             {
@@ -90,7 +94,6 @@ namespace HttpMocks
                 await context.Response.OutputStream.WriteAsync(httpResponseInfo.ContentBytes, 0, contentBytesLength).ConfigureAwait(false);
                 await context.Response.OutputStream.FlushAsync();
             }
-            context.Response.Close();
         }
 
         private static HttpRequestInfo BuildHttpRequestInfo(HttpListenerContext context, byte[] requestContentBytes)

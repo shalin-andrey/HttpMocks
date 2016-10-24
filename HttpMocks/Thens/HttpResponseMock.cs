@@ -12,6 +12,6 @@ namespace HttpMocks.Thens
 
         public int StatusCode { get; }
         public HttpResponseMockContent Content { get; set; }
-        public NameValueCollection Headers { get; set; }
+        public NameValueCollection Headers { get; private set; }
     }
 }
