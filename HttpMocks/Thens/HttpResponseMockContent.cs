@@ -1,4 +1,4 @@
-﻿namespace HttpMocks
+﻿namespace HttpMocks.Thens
 {
     internal class HttpResponseMockContent
     {

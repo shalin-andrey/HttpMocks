@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Threading;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests
@@ -20,7 +19,7 @@ namespace HttpMocks.Tests
             var httpMockServer = new HttpMockRunner();
             httpMockServer.RunMock(httpMock);
 
-            var request = HttpWebRequest.Create("http://localhost:23457/bills");
+            var request = WebRequest.Create("http://localhost:23457/bills");
             request.Method = "GET";
             request.Timeout = 2000;
             var response = (HttpWebResponse) request.GetResponse();
@@ -50,7 +49,7 @@ namespace HttpMocks.Tests
         {
             try
             {
-                var request = HttpWebRequest.Create("http://localhost:23457/bills");
+                var request = WebRequest.Create("http://localhost:23457/bills");
                 request.Method = "GET";
                 request.Timeout = 2000;
                 var response = (HttpWebResponse) request.GetResponse();

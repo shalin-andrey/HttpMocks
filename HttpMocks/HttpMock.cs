@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HttpMocks.Whens;
 
 namespace HttpMocks
 {
     public class HttpMock
     {
-        private readonly List<HttpRequestMock> requestMocks;
+        private readonly List<IInternalHttpRequestMockBuilder> internalHttpRequestMockBuilders;
 
         public static HttpMock New(string prefix)
         {
@@ -15,21 +16,25 @@ namespace HttpMocks
         private HttpMock(string prefix)
         {
             Prefix = prefix;
-            requestMocks = new List<HttpRequestMock>();
+            internalHttpRequestMockBuilders = new List<IInternalHttpRequestMockBuilder>();
         }
 
         internal string Prefix { get; }
-        internal IEnumerable<HttpRequestMock> Requests => requestMocks;
 
-        public IHttpRequestGetMock WhenRequestGet()
+        internal HttpRequestMock[] Build()
+        {
+            return internalHttpRequestMockBuilders.Select(b => b.Build()).ToArray();
+        }
+
+        public IHttpRequestGetMockBuilder WhenRequestGet()
         {
             return WhenRequestGet(string.Empty);
         }
 
-        public IHttpRequestGetMock WhenRequestGet(string path)
+        public IHttpRequestGetMockBuilder WhenRequestGet(string path)
         {
-            var requestMock = new HttpRequestGetMock(path);
-            requestMocks.Add(requestMock);
+            var requestMock = new HttpRequestWihtoutContentMockBuilder(path);
+            internalHttpRequestMockBuilders.Add(requestMock);
             return requestMock;
         }
     }

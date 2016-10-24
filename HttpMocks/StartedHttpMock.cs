@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using HttpMocks.Thens;
 using HttpMocks.Verifications;
 
 namespace HttpMocks
@@ -18,7 +19,7 @@ namespace HttpMocks
 
         public StartedHttpMock(HttpMock httpMock)
         {
-            handlingMockQueue = new HandlingMockQueue(httpMock.Requests);
+            handlingMockQueue = new HandlingMockQueue(httpMock.Build());
             httpListener = new HttpListener();
             httpListener.Prefixes.Add(httpMock.Prefix);
             verificationMockResults = new List<VerificationResult>();

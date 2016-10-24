@@ -1,0 +1,17 @@
+﻿.idea/
+*.sln.iml
+bin
+obj
+_ReSharper.*
+*.user
+*.suo
+logs
+TestResults
+deploy
+
+AssemblyTitle.cs
+AssemblyVersion.cs
+/packages
+/.nuget
+
+*.swp

@@ -1,35 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Specialized;
 
-namespace HttpMocks
+namespace HttpMocks.Thens
 {
-    internal class HttpResponseMock : IHttpResponseMock
+    internal class HttpResponseMock
     {
-        private readonly Dictionary<string, string> headers;
-
         public HttpResponseMock(int statusCode)
         {
             StatusCode = statusCode;
-            Content = HttpResponseMockContent.Empty;
+            Headers = new NameValueCollection();
         }
 
-        public HttpResponseMockContent Content { get; private set; }
         public int StatusCode { get; }
-
-        public IHttpResponseMock ThenContent(byte[] contentBytes, string contentType)
-        {
-            Content = new HttpResponseMockContent(contentBytes, contentType);
-
-            return this;
-        }
-
-        public IHttpResponseMock ThenHeader(string headerName, string headerValue)
-        {
-            if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(nameof(headerName));
-
-            headers[headerName] = headerValue;
-
-            return this;
-        }
+        public HttpResponseMockContent Content { get; set; }
+        public NameValueCollection Headers { get; set; }
     }
 }

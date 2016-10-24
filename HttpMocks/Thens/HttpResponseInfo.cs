@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
 
-namespace HttpMocks
+namespace HttpMocks.Thens
 {
     public class HttpResponseInfo
     {

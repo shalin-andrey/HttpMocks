@@ -1,4 +1,6 @@
-﻿namespace HttpMocks
+﻿using HttpMocks.Thens;
+
+namespace HttpMocks
 {
     internal class HttpRequestMockHandlingInfo
     {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HttpMocks.Thens;
 
 namespace HttpMocks
 {
@@ -7,9 +8,9 @@ namespace HttpMocks
     {
         private readonly List<HttpRequestMockHandlingInfo> handlingInfos;
 
-        public HandlingMockQueue(IEnumerable<HttpRequestMock> requestMocks)
+        public HandlingMockQueue(IEnumerable<HttpRequestMock> httpRequestMocks)
         {
-            handlingInfos = new List<HttpRequestMockHandlingInfo>(GetRequestMockHandlingInfos(requestMocks));
+            handlingInfos = new List<HttpRequestMockHandlingInfo>(GetRequestMockHandlingInfos(httpRequestMocks));
         }
 
         public HttpResponseMock Dequeue(string method, string path)
