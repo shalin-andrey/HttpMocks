@@ -46,7 +46,7 @@ namespace HttpMocks
                 var context = await SafeGetContextAsync().ConfigureAwait(false);
                 if (context == null)
                 {
-                    continue;
+                    return;
                 }
 
                 try
@@ -58,7 +58,7 @@ namespace HttpMocks
                 }
                 catch (Exception e)
                 {
-                    verificationMockResults.Add(new VerificationResult {Message = $"{e.Message}"});
+                    verificationMockResults.Add(new VerificationResult {Message = $"{e}"});
                 }
                 finally
                 {
@@ -92,7 +92,7 @@ namespace HttpMocks
             {
                 context.Response.ContentType = httpResponseInfo.ContentType;
                 await context.Response.OutputStream.WriteAsync(httpResponseInfo.ContentBytes, 0, contentBytesLength).ConfigureAwait(false);
-                await context.Response.OutputStream.FlushAsync();
+                await context.Response.OutputStream.FlushAsync().ConfigureAwait(false);
             }
         }
 
@@ -140,9 +140,9 @@ namespace HttpMocks
             {
                 var currentNeedReadLength = contentLength - offset > buffer.Length
                     ? buffer.Length
-                    : offset;
+                    : contentLength - offset;
 
-                var currentReadedCount = await stream.ReadAsync(buffer, offset, currentNeedReadLength).ConfigureAwait(false);
+                var currentReadedCount = await stream.ReadAsync(buffer, offset, (int)currentNeedReadLength).ConfigureAwait(false);
                 offset += currentReadedCount;
             }
             return buffer;

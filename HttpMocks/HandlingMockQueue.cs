@@ -16,7 +16,7 @@ namespace HttpMocks
         public HttpResponseMock Dequeue(string method, string path)
         {
             var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(method, path));
-            if (handlingInfo != null)
+            if (handlingInfo != null && handlingInfo.ResponseMock.Count == 0)
             {
                 handlingInfos.Remove(handlingInfo);
             }

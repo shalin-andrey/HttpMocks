@@ -51,7 +51,7 @@
     <Compile Include="StartedHttpMock.cs" />
     <Compile Include="Thens\HttpResponseMock.cs" />
     <Compile Include="Thens\IInternalHttpResponseMockBuilder.cs" />
-    <Compile Include="Whens\HttpRequestWihtoutContentMockBuilder.cs" />
+    <Compile Include="Whens\HttpRequestWithoutContentMockBuilder.cs" />
     <Compile Include="Whens\HttpRequestMockContent.cs" />
     <Compile Include="Whens\HttpRequestWithContentMockBuilder.cs" />
     <Compile Include="Whens\IHttpRequestGetMockBuilder.cs" />

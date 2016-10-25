@@ -29,6 +29,12 @@ namespace HttpMocks
                 .ToArray();
 
             var verificationMockResults = stopMockTasks.SelectMany(t => t.Result).ToArray();
+
+            if (verificationMockResults.Length == 0)
+            {
+                return;
+            }
+            
             var resultsString = new StringBuilder();
             foreach (var verificationMockResult in verificationMockResults)
             {

@@ -6,10 +6,12 @@ namespace HttpMocks.Whens
     internal class HttpRequestWithContentMockBuilder : IHttpRequestPostMockBuilder, IInternalHttpRequestMockBuilder
     {
         private readonly HttpRequestMock httpRequestMock;
+        private HttpResponseMockBuilder httpResponseMockBuilder;
 
         public HttpRequestWithContentMockBuilder(string pathPattern)
         {
             httpRequestMock = new HttpRequestMock("POST", pathPattern);
+            httpResponseMockBuilder = new HttpResponseMockBuilder(200);
         }
 
         public IHttpRequestPostMockBuilder WhenHeader(string headerName, string headerValue)
@@ -32,11 +34,12 @@ namespace HttpMocks.Whens
 
         public IHttpResponseMockBuilder ThenResponse(int statusCode)
         {
-            return new HttpResponseMockBuilder(statusCode);
+            return httpResponseMockBuilder = new HttpResponseMockBuilder(statusCode);
         }
 
         public HttpRequestMock Build()
         {
+            httpRequestMock.Response = httpResponseMockBuilder.Build();
             return httpRequestMock;
         }
     }

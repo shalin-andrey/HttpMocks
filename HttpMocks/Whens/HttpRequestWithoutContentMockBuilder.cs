@@ -3,12 +3,12 @@ using HttpMocks.Thens;
 
 namespace HttpMocks.Whens
 {
-    internal class HttpRequestWihtoutContentMockBuilder : IHttpRequestGetMockBuilder, IInternalHttpRequestMockBuilder
+    internal class HttpRequestWithoutContentMockBuilder : IHttpRequestGetMockBuilder, IInternalHttpRequestMockBuilder
     {
         private HttpResponseMockBuilder httpResponseMockBuilder;
         private readonly HttpRequestMock httpRequestMock;
 
-        public HttpRequestWihtoutContentMockBuilder(string pathPattern)
+        public HttpRequestWithoutContentMockBuilder(string pathPattern)
         {
             httpRequestMock = new HttpRequestMock("GET", pathPattern);
             httpResponseMockBuilder = new HttpResponseMockBuilder(200);
@@ -29,6 +29,7 @@ namespace HttpMocks.Whens
 
         public HttpRequestMock Build()
         {
+            httpRequestMock.Response = httpResponseMockBuilder.Build();
             return httpRequestMock;
         }
     }

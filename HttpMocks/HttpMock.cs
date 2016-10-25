@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HttpMocks.Thens;
 using HttpMocks.Whens;
 
 namespace HttpMocks
@@ -33,7 +34,14 @@ namespace HttpMocks
 
         public IHttpRequestGetMockBuilder WhenRequestGet(string path)
         {
-            var requestMock = new HttpRequestWihtoutContentMockBuilder(path);
+            var requestMock = new HttpRequestWithoutContentMockBuilder(path);
+            internalHttpRequestMockBuilders.Add(requestMock);
+            return requestMock;
+        }
+
+        public IHttpRequestPostMockBuilder WhenRequestPost(string path)
+        {
+            var requestMock = new HttpRequestWithContentMockBuilder(path);
             internalHttpRequestMockBuilders.Add(requestMock);
             return requestMock;
         }

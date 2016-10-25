@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests
@@ -19,6 +18,14 @@ namespace HttpMocks.Tests
             httpPathPattern.IsMatch("bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payment").Should().BeFalse();
             httpPathPattern.IsMatch("bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a").Should().BeFalse();
             httpPathPattern.IsMatch("bills/eaftd87d-d1fc-4dc6-9870-7aaff150031a/payments").Should().BeFalse();
+        }
+
+        [Test]
+        public void TestIsMatchWhenSimple()
+        {
+            var httpPathPattern = new HttpPathPattern("/billrows");
+
+            httpPathPattern.IsMatch("/billrows").Should().BeTrue();
         }
     }
 }
