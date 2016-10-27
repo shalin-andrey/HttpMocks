@@ -102,21 +102,13 @@ namespace HttpMocks.Tests.Integrational
                     return Convert((HttpWebResponse) e.Response);
                 }
 
-                return new TestResponse
-                {
-                    StatusCode = 452,
-                    ContentBytes = new byte[0]
-                };
+                return TestResponse.Create(452);
             }
         }
 
         private static TestResponse Convert(HttpWebResponse httpWebResponse)
         {
-            return new TestResponse
-            {
-                StatusCode = (int) httpWebResponse.StatusCode,
-                ContentBytes = ReadResponseContentBytes(httpWebResponse)
-            };
+            return TestResponse.Create((int) httpWebResponse.StatusCode, ReadResponseContentBytes(httpWebResponse));
         }
 
         private static byte[] ReadResponseContentBytes(HttpWebResponse httpWebResponse)
