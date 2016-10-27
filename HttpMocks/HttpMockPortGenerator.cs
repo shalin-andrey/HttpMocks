@@ -22,7 +22,7 @@ namespace HttpMocks
             {
                 newPort = random.Next(20000, 40000);
                 tryCount++;
-            } while (actualPorts.Contains(newPort) || tryCount < 10);
+            } while (actualPorts.Contains(newPort) && tryCount < 10);
 
             if (tryCount >= 10)
             {

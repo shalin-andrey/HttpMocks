@@ -18,7 +18,7 @@ namespace HttpMocks
             internalHttpRequestMockBuilders = new List<IInternalHttpRequestMockBuilder>();
         }
 
-        internal Uri MockUri { get; }
+        public Uri MockUri { get; }
 
         internal HttpRequestMock[] Build()
         {
