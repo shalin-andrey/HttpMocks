@@ -2,7 +2,7 @@
 using System.Linq;
 using HttpMocks.Thens;
 
-namespace HttpMocks
+namespace HttpMocks.Implementation
 {
     internal class HandlingMockQueue
     {

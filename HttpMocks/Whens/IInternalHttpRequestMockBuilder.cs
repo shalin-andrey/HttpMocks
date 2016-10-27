@@ -1,4 +1,6 @@
-﻿namespace HttpMocks.Whens
+﻿using HttpMocks.Implementation;
+
+namespace HttpMocks.Whens
 {
     internal interface IInternalHttpRequestMockBuilder
     {

@@ -1,13 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using HttpMocks.Thens;
 using HttpMocks.Verifications;
 
-namespace HttpMocks
+namespace HttpMocks.Implementation
 {
     internal class StartedHttpMock
     {
@@ -51,14 +49,20 @@ namespace HttpMocks
 
                 try
                 {
-                    var requestContentBytes = await ReadInputStreamToEndAsync(context.Request.ContentLength64, context.Request.InputStream).ConfigureAwait(false);
-                    var httpRequestInfo = BuildHttpRequestInfo(context, requestContentBytes);
+                    context.Response.SendChunked = false;
+
+                    var requestContentBytes = await ReadInputStreamAsync(context.Request.ContentLength64, context.Request.InputStream).ConfigureAwait(false);
+                    var httpRequestInfo = HttpRequestInfo.Create(context.Request.HttpMethod,
+                        context.Request.Url.LocalPath, context.Request.QueryString,
+                        context.Request.Headers, requestContentBytes);
                     var httpResponseInfo = ProcessRequest(httpRequestInfo);
                     await WriteResponseAsync(context, httpResponseInfo).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
-                    verificationMockResults.Add(new VerificationResult {Message = $"{e}"});
+                    var verificationResult = VerificationResult.Create($"Unhandle exception: {e}");
+                    verificationMockResults.Add(verificationResult);
+                    context.Response.StatusCode = 500;
                 }
                 finally
                 {
@@ -91,21 +95,10 @@ namespace HttpMocks
             if (contentBytesLength > 0)
             {
                 context.Response.ContentType = httpResponseInfo.ContentType;
+                context.Response.ContentLength64 = httpResponseInfo.ContentBytes.Length;
                 await context.Response.OutputStream.WriteAsync(httpResponseInfo.ContentBytes, 0, contentBytesLength).ConfigureAwait(false);
                 await context.Response.OutputStream.FlushAsync().ConfigureAwait(false);
             }
-        }
-
-        private static HttpRequestInfo BuildHttpRequestInfo(HttpListenerContext context, byte[] requestContentBytes)
-        {
-            return new HttpRequestInfo
-            {
-                Method = context.Request.HttpMethod,
-                Headers = context.Request.Headers,
-                Query = context.Request.QueryString,
-                Path = context.Request.Url.LocalPath,
-                ContentBytes = requestContentBytes
-            };
         }
 
         private HttpResponseInfo ProcessRequest(HttpRequestInfo httpRequestInfo)
@@ -114,25 +107,16 @@ namespace HttpMocks
 
             if (httpResponseMock == null)
             {
-                verificationMockResults.Add(new VerificationResult{Message = $"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path}, but not expected."});
-                return BuildInternalServerErrorResponseInfo();
+                var verificationResult = VerificationResult.Create($"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path}, but not expected.");
+                verificationMockResults.Add(verificationResult);
+                return HttpResponseInfo.Create(500);
             }
 
-            return BuildResponseInfo(httpResponseMock);
+            return HttpResponseInfo.Create(httpResponseMock.StatusCode, httpResponseMock.Content.Bytes,
+                httpResponseMock.Content.Type, httpResponseMock.Headers);
         }
 
-        private static HttpResponseInfo BuildInternalServerErrorResponseInfo()
-        {
-            return HttpResponseInfo.Create(500);
-        }
-
-        private static HttpResponseInfo BuildResponseInfo(HttpResponseMock httpResponseMock)
-        {
-            return HttpResponseInfo.Create(httpResponseMock.StatusCode,
-                httpResponseMock.Content.Bytes, httpResponseMock.Content.Type, new NameValueCollection());
-        }
-
-        private static async Task<byte[]> ReadInputStreamToEndAsync(long contentLength, Stream stream)
+        private static async Task<byte[]> ReadInputStreamAsync(long contentLength, Stream stream)
         {
             var buffer = new byte[contentLength];
             var offset = 0;

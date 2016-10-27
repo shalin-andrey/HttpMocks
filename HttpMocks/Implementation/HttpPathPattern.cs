@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace HttpMocks
+namespace HttpMocks.Implementation
 {
     public class HttpPathPattern
     {

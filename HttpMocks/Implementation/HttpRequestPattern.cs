@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace HttpMocks
+namespace HttpMocks.Implementation
 {
     public class HttpRequestPattern
     {
-        private readonly string method;
+        private readonly string methodPattern;
         private readonly HttpPathPattern pathPattern;
 
         public HttpRequestPattern(string method, string pathPattern)
         {
-            this.method = method.ToLower();
+            methodPattern = method.ToLower();
             this.pathPattern = new HttpPathPattern(pathPattern);
         }
 
@@ -17,7 +17,7 @@ namespace HttpMocks
         {
             if (string.IsNullOrWhiteSpace(method)) throw new ArgumentNullException(nameof(method));
 
-            return this.method == method.ToLower() && pathPattern.IsMatch(path);
+            return string.Equals(methodPattern, method, StringComparison.OrdinalIgnoreCase) && pathPattern.IsMatch(path);
         }
     }
 }

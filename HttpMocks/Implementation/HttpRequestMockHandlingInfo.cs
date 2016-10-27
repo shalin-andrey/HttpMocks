@@ -1,6 +1,6 @@
 ﻿using HttpMocks.Thens;
 
-namespace HttpMocks
+namespace HttpMocks.Implementation
 {
     internal class HttpRequestMockHandlingInfo
     {

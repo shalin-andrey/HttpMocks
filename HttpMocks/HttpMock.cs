@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HttpMocks.Implementation;
 using HttpMocks.Thens;
 using HttpMocks.Whens;
 
 namespace HttpMocks
 {
-    public class HttpMock : IDisposable
+    public class HttpMock : IHttpMock
     {
-        private readonly HttpMockRunner httpMockRunner;
+        private readonly IHttpMockRunner httpMockRunner;
         private readonly List<IInternalHttpRequestMockBuilder> internalHttpRequestMockBuilders;
         
-        internal HttpMock(HttpMockRunner httpMockRunner, Uri mockUri)
+        internal HttpMock(IHttpMockRunner httpMockRunner, Uri mockUri)
         {
             this.httpMockRunner = httpMockRunner;
             MockUri = mockUri;
@@ -44,9 +45,14 @@ namespace HttpMocks
             return requestMock;
         }
 
-        public void Dispose()
+        public void Run()
         {
             httpMockRunner.RunMock(this);
+        }
+
+        public void Dispose()
+        {
+            Run();
         }
     }
 }

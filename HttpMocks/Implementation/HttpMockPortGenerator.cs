@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HttpMocks
+namespace HttpMocks.Implementation
 {
     public class HttpMockPortGenerator
     {

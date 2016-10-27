@@ -2,6 +2,14 @@
 {
     public class VerificationResult
     {
-        public string Message { get; set; }
+        public static VerificationResult Create(string message)
+        {
+            return new VerificationResult
+            {
+                Message = message
+            };
+        }
+
+        public string Message { get; private set; }
     }
 }

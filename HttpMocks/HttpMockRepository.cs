@@ -1,18 +1,29 @@
 ﻿using System;
+using HttpMocks.Implementation;
 
 namespace HttpMocks
 {
     public class HttpMockRepository
     {
         private static readonly HttpMockPortGenerator portGenerator = new HttpMockPortGenerator();
-        private static readonly HttpMockRunner httpMockRunner = new HttpMockRunner();
+        private readonly IHttpMockRunner httpMockRunner;
 
-        public HttpMock New(string host)
+        public HttpMockRepository()
+            : this(new HttpMockRunner())
+        {
+        }
+
+        internal HttpMockRepository(IHttpMockRunner httpMockRunner)
+        {
+            this.httpMockRunner = httpMockRunner;
+        }
+
+        public IHttpMock New(string host)
         {
             return New(host, portGenerator.GeneratePort());
         }
 
-        public HttpMock New(string host, int port)
+        public IHttpMock New(string host, int port)
         {
             if (string.IsNullOrWhiteSpace(host)) throw new ArgumentNullException(nameof(host));
             if (port <= 0) throw new ArgumentNullException(nameof(port));
@@ -21,7 +32,7 @@ namespace HttpMocks
             return New(uriBuilder.Uri);
         }
 
-        public HttpMock New(Uri uri)
+        public IHttpMock New(Uri uri)
         {
             return new HttpMock(httpMockRunner, uri);
         }

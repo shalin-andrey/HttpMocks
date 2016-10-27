@@ -1,7 +1,7 @@
 ﻿using System.Collections.Specialized;
 using HttpMocks.Thens;
 
-namespace HttpMocks
+namespace HttpMocks.Implementation
 {
     internal class HttpRequestMock
     {

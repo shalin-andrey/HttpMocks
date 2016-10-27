@@ -38,19 +38,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HandlingMockQueue.cs" />
     <Compile Include="HttpMock.cs" />
-    <Compile Include="HttpMockPortGenerator.cs" />
     <Compile Include="HttpMockRepository.cs" />
     <Compile Include="HttpMockRunner.cs" />
-    <Compile Include="HttpPathPattern.cs" />
-    <Compile Include="HttpRequestMock.cs" />
-    <Compile Include="HttpRequestInfo.cs" />
-    <Compile Include="HttpRequestMockHandlingInfo.cs" />
-    <Compile Include="HttpRequestPattern.cs" />
-    <Compile Include="HttpResponseInfo.cs" />
+    <Compile Include="IHttpMock.cs" />
+    <Compile Include="IHttpMockRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StartedHttpMock.cs" />
+    <Compile Include="Implementation\HandlingMockQueue.cs" />
+    <Compile Include="Implementation\HttpMockPortGenerator.cs" />
+    <Compile Include="Implementation\HttpPathPattern.cs" />
+    <Compile Include="Implementation\HttpRequestInfo.cs" />
+    <Compile Include="Implementation\HttpRequestMock.cs" />
+    <Compile Include="Implementation\HttpRequestMockHandlingInfo.cs" />
+    <Compile Include="Implementation\HttpRequestPattern.cs" />
+    <Compile Include="Implementation\HttpResponseInfo.cs" />
+    <Compile Include="Implementation\StartedHttpMock.cs" />
     <Compile Include="Thens\HttpResponseMock.cs" />
     <Compile Include="Thens\IInternalHttpResponseMockBuilder.cs" />
     <Compile Include="Whens\HttpRequestWithoutContentMockBuilder.cs" />
