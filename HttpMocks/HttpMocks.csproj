@@ -40,6 +40,8 @@
   <ItemGroup>
     <Compile Include="HandlingMockQueue.cs" />
     <Compile Include="HttpMock.cs" />
+    <Compile Include="HttpMockPortGenerator.cs" />
+    <Compile Include="HttpMockRepository.cs" />
     <Compile Include="HttpMockRunner.cs" />
     <Compile Include="HttpPathPattern.cs" />
     <Compile Include="HttpRequestMock.cs" />
@@ -54,7 +56,9 @@
     <Compile Include="Whens\HttpRequestWithoutContentMockBuilder.cs" />
     <Compile Include="Whens\HttpRequestMockContent.cs" />
     <Compile Include="Whens\HttpRequestWithContentMockBuilder.cs" />
+    <Compile Include="Whens\IHttpRequestDeleteMockBuilder.cs" />
     <Compile Include="Whens\IHttpRequestGetMockBuilder.cs" />
+    <Compile Include="Whens\IHttpRequestHeadMockBuilder.cs" />
     <Compile Include="Whens\IHttpRequestMockBuilder.cs" />
     <Compile Include="Whens\IHttpRequestPostMockBuilder.cs" />
     <Compile Include="Verifications\AssertHttpMockException.cs" />

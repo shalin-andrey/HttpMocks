@@ -3,7 +3,7 @@ using HttpMocks.Thens;
 
 namespace HttpMocks.Whens
 {
-    internal class HttpRequestWithoutContentMockBuilder : IHttpRequestGetMockBuilder, IInternalHttpRequestMockBuilder
+    internal class HttpRequestWithoutContentMockBuilder : IHttpRequestGetMockBuilder, IInternalHttpRequestMockBuilder, IHttpRequestDeleteMockBuilder, IHttpRequestHeadMockBuilder
     {
         private HttpResponseMockBuilder httpResponseMockBuilder;
         private readonly HttpRequestMock httpRequestMock;

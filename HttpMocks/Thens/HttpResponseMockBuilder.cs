@@ -9,6 +9,7 @@ namespace HttpMocks.Thens
         public HttpResponseMockBuilder(int statusCode)
         {
             httpResponseMock = new HttpResponseMock(statusCode);
+            httpResponseMock.Content = HttpResponseMockContent.Empty;
         }
 
         public IHttpResponseMockBuilder ThenContent(byte[] contentBytes, string contentType)

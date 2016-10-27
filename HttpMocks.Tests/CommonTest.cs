@@ -10,7 +10,7 @@ namespace HttpMocks.Tests
         [Test]
         public void TestA()
         {
-            var httpMock = HttpMock.New("http://localhost:23457/");
+            var httpMock = new HttpMockRepository().New("localhost", 23457);
 
             httpMock
                 .WhenRequestGet("/bills")
@@ -31,7 +31,7 @@ namespace HttpMocks.Tests
         [Test]
         public void TestB()
         {
-            var httpMock = HttpMock.New("http://localhost:23457/");
+            var httpMock = new HttpMockRepository().New("localhost", 23457);
 
             httpMock
                 .WhenRequestGet("/bills/@guid")

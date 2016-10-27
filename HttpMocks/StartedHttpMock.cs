@@ -21,7 +21,7 @@ namespace HttpMocks
         {
             handlingMockQueue = new HandlingMockQueue(httpMock.Build());
             httpListener = new HttpListener();
-            httpListener.Prefixes.Add(httpMock.Prefix);
+            httpListener.Prefixes.Add(httpMock.MockUri.ToString());
             verificationMockResults = new List<VerificationResult>();
         }
 
