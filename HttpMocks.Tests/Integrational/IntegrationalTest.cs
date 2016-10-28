@@ -38,7 +38,67 @@ namespace HttpMocks.Tests.Integrational
         }
 
         [Test]
-        public void TestSuccessThenGetReturn200AndResult()
+        public void TestFailWhenActualRepeatMoreThatExpected()
+        {
+            var httpMock = httpMocks.New("localhost");
+            httpMock
+                .WhenRequestGet("/bills")
+                .ThenResponse(200)
+                .Repeat(1);
+            httpMock.Run();
+
+            var url = BuildUrl(httpMock, "/bills");
+
+            Send(url, "GET").StatusCode.ShouldBeEquivalentTo(200);
+
+            Send(url, "GET").StatusCode.ShouldBeEquivalentTo(500);
+
+            httpMocks.Invoking(m => m.VerifyAll())
+                .ShouldThrowExactly<AssertHttpMockException>()
+                .WithMessage("Actual request GET /bills repeat count 2, but max expected repeat count 1.");
+        }
+
+        [Test]
+        public void TestFailWhenDefaultActualRepeatMoreThatExpected()
+        {
+            var httpMock = httpMocks.New("localhost");
+            httpMock
+                .WhenRequestGet("/bills")
+                .ThenResponse(200);
+            httpMock.Run();
+
+            var url = BuildUrl(httpMock, "/bills");
+
+            Send(url, "GET").StatusCode.ShouldBeEquivalentTo(200);
+
+            Send(url, "GET").StatusCode.ShouldBeEquivalentTo(500);
+
+            httpMocks.Invoking(m => m.VerifyAll())
+                .ShouldThrowExactly<AssertHttpMockException>()
+                .WithMessage("Actual request GET /bills repeat count 2, but max expected repeat count 1.");
+        }
+
+        [Test]
+        public void TestFailWhenAnyActualRepeatMoreThatExpected()
+        {
+            var httpMock = httpMocks.New("localhost");
+            httpMock
+                .WhenRequestGet("/bills")
+                .ThenResponse(200)
+                .RepeatAny();
+            httpMock.Run();
+
+            var url = BuildUrl(httpMock, "/bills");
+
+            Send(url, "GET").StatusCode.ShouldBeEquivalentTo(200);
+
+            Send(url, "GET").StatusCode.ShouldBeEquivalentTo(200);
+
+            httpMocks.Invoking(m => m.VerifyAll());
+        }
+
+        [Test]
+        public void TestSuccessWhenGetReturn200AndResult()
         {
             const string testDataString = "Test data";
             var content = Encoding.UTF8.GetBytes(testDataString);

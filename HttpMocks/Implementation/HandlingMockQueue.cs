@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using HttpMocks.Thens;
 
 namespace HttpMocks.Implementation
 {
@@ -13,14 +12,19 @@ namespace HttpMocks.Implementation
             handlingInfos = new List<HttpRequestMockHandlingInfo>(GetRequestMockHandlingInfos(httpRequestMocks));
         }
 
-        public HttpResponseMock Dequeue(string method, string path)
+        public HttpRequestMockHandlingInfo Dequeue(string method, string path)
         {
-            var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(method, path));
-            if (handlingInfo != null && handlingInfo.ResponseMock.Count == 0)
+            lock (handlingInfos)
             {
-                handlingInfos.Remove(handlingInfo);
+                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(method, path) && !i.HasAttempts());
+                if (handlingInfo == null)
+                {
+                    handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(method, path));
+                }
+
+                handlingInfo?.IncreaseUsageCount();
+                return handlingInfo;
             }
-            return handlingInfo?.ResponseMock;
         }
 
         private IEnumerable<HttpRequestMockHandlingInfo> GetRequestMockHandlingInfos(IEnumerable<HttpRequestMock> requestMocks)

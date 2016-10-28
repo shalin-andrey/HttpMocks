@@ -8,9 +8,21 @@ namespace HttpMocks.Implementation
         {
             RequestPattern = requestPattern;
             ResponseMock = responseMock;
+            UsageCount = 0;
+        }
+
+        public void IncreaseUsageCount()
+        {
+            UsageCount++;
+        }
+
+        public bool HasAttempts()
+        {
+            return ResponseMock.RepeatCount >= UsageCount;
         }
 
         public HttpRequestPattern RequestPattern { get; }
         public HttpResponseMock ResponseMock { get; }
+        public int UsageCount { get; private set; }
     }
 }

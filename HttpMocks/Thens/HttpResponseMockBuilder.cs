@@ -28,6 +28,20 @@ namespace HttpMocks.Thens
             return this;
         }
 
+        public IHttpResponseMockBuilder Repeat(int count)
+        {
+            httpResponseMock.RepeatCount = count;
+
+            return this;
+        }
+
+        public IHttpResponseMockBuilder RepeatAny()
+        {
+            httpResponseMock.RepeatCount = int.MaxValue;
+
+            return this;
+        }
+
         public HttpResponseMock Build()
         {
             return httpResponseMock;

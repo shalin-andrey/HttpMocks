@@ -8,12 +8,12 @@ namespace HttpMocks.Thens
         {
             StatusCode = statusCode;
             Headers = new NameValueCollection();
-            Count = -1;
+            RepeatCount = 1;
         }
 
         public int StatusCode { get; }
         public HttpResponseMockContent Content { get; set; }
         public NameValueCollection Headers { get; private set; }
-        public int Count { get; private set; }
+        public int RepeatCount { get; set; }
     }
 }

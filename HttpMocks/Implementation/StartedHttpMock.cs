@@ -103,14 +103,24 @@ namespace HttpMocks.Implementation
 
         private HttpResponseInfo ProcessRequest(HttpRequestInfo httpRequestInfo)
         {
-            var httpResponseMock = handlingMockQueue.Dequeue(httpRequestInfo.Method, httpRequestInfo.Path);
+            var handlingInfo = handlingMockQueue.Dequeue(httpRequestInfo.Method, httpRequestInfo.Path);
 
-            if (httpResponseMock == null)
+            if (handlingInfo == null)
             {
                 var verificationResult = VerificationResult.Create($"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path}, but not expected.");
                 verificationMockResults.Add(verificationResult);
                 return HttpResponseInfo.Create(500);
             }
+
+            if (!handlingInfo.HasAttempts())
+            {
+                var verificationResult = VerificationResult.Create($"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path} repeat" +
+                                                                   $" count {handlingInfo.UsageCount}, but max expected repeat count {handlingInfo.ResponseMock.RepeatCount}.");
+                verificationMockResults.Add(verificationResult);
+                return HttpResponseInfo.Create(500);
+            }
+
+            var httpResponseMock = handlingInfo.ResponseMock;
 
             return HttpResponseInfo.Create(httpResponseMock.StatusCode, httpResponseMock.Content.Bytes,
                 httpResponseMock.Content.Type, httpResponseMock.Headers);
