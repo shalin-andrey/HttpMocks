@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using HttpMocks.Implementation;
 using NUnit.Framework;
 
@@ -8,25 +9,23 @@ namespace HttpMocks.Tests.Unit.Implementation
     public class HttpPathPatternTests
     {
         [Test]
-        public void TestIsMatch()
+        [TestCaseSource(nameof(GenerateTestCaseDatas))]
+        public void TestIsMatchWhenUrlContainsGuid(string pattern, string value, bool expected)
         {
-            var httpPathPattern = new HttpPathPattern("bills/@guid/payments");
-
-            httpPathPattern.IsMatch("bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payments").Should().BeTrue();
-            httpPathPattern.IsMatch(" /bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payments /").Should().BeTrue();
-
-            httpPathPattern.IsMatch("bill/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payments").Should().BeFalse();
-            httpPathPattern.IsMatch("bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payment").Should().BeFalse();
-            httpPathPattern.IsMatch("bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a").Should().BeFalse();
-            httpPathPattern.IsMatch("bills/eaftd87d-d1fc-4dc6-9870-7aaff150031a/payments").Should().BeFalse();
+            var httpPathPattern = new HttpPathPattern(pattern);
+            httpPathPattern.IsMatch(value).Should().Be(expected);
         }
 
-        [Test]
-        public void TestIsMatchWhenSimple()
+        private static IEnumerable<TestCaseData> GenerateTestCaseDatas()
         {
-            var httpPathPattern = new HttpPathPattern("/billrows");
-
-            httpPathPattern.IsMatch("/billrows").Should().BeTrue();
+            yield return new TestCaseData("bills/@guid/payments", "bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payments", true);
+            yield return new TestCaseData("bills/@guid/payments", " /bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payments/", true);
+            yield return new TestCaseData("bills/@guid/payments", "bill/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payments", false);
+            yield return new TestCaseData("bills/@guid/payments", "bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payment", false);
+            yield return new TestCaseData("bills/@guid/payments", "bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a", false);
+            yield return new TestCaseData("bills/@guid/payments", "bills/eaftd87d-d1fc-4dc6-9870-7aaff150031a/payments", false);
+            yield return new TestCaseData("bills/@guid/payments/@guid", "/bills/eaf1d87d-d1fc-4dc6-9870-7aaff150031a/payments/88a4932c-c20f-4c2e-8787-af616f5f4124", true);
+            yield return new TestCaseData("/billrows", "/billrows", true);
         }
     }
 }

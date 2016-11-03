@@ -1,6 +1,6 @@
 ﻿namespace HttpMocks.Thens
 {
-    internal class HttpResponseMockContent
+    public class HttpResponseMockContent
     {
         public static readonly HttpResponseMockContent Empty = new HttpResponseMockContent(new byte[0], string.Empty);
 

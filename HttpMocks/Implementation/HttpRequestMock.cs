@@ -3,7 +3,7 @@ using HttpMocks.Thens;
 
 namespace HttpMocks.Implementation
 {
-    internal class HttpRequestMock
+    public class HttpRequestMock
     {
         public HttpRequestMock(string method, string pathPattern)
         {

@@ -1,6 +1,6 @@
 ﻿namespace HttpMocks
 {
-    internal class HttpRequestMockContent
+    public class HttpRequestMockContent
     {
         public static readonly HttpRequestMockContent Empty = new HttpRequestMockContent(new byte[0], string.Empty);
 

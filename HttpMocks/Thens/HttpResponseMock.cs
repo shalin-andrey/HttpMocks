@@ -2,7 +2,7 @@
 
 namespace HttpMocks.Thens
 {
-    internal class HttpResponseMock
+    public class HttpResponseMock
     {
         public HttpResponseMock(int statusCode)
         {

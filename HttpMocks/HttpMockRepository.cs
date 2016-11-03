@@ -9,7 +9,7 @@ namespace HttpMocks
         private readonly IHttpMockRunner httpMockRunner;
 
         public HttpMockRepository()
-            : this(new HttpMockRunner())
+            : this(new HttpMockRunner(new HandlingMockQueueFactory(), new StartedHttpMockFactory()))
         {
         }
 

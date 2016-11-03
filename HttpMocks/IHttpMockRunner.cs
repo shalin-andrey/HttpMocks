@@ -1,8 +1,11 @@
+using System;
+using HttpMocks.Implementation;
+
 namespace HttpMocks
 {
     public interface IHttpMockRunner
     {
-        void RunMock(HttpMock httpMock);
+        void RunMocks(Uri mockUrl, HttpRequestMock[] httpRequestMocks);
         void VerifyAll();
     }
 }

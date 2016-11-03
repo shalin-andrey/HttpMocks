@@ -7,19 +7,19 @@ using HttpMocks.Verifications;
 
 namespace HttpMocks.Implementation
 {
-    internal class StartedHttpMock
+    internal class StartedHttpMock : IStartedHttpMock
     {
         private readonly HttpListener httpListener;
-        private readonly HandlingMockQueue handlingMockQueue;
+        private readonly IHandlingMockQueue handlingMockQueue;
         private readonly List<VerificationResult> verificationMockResults;
         private bool stated;
         private Task listenHttpMockTask;
 
-        public StartedHttpMock(HttpMock httpMock)
+        public StartedHttpMock(Uri mockUrl, IHandlingMockQueue handlingMockQueue)
         {
-            handlingMockQueue = new HandlingMockQueue(httpMock.Build());
+            this.handlingMockQueue = handlingMockQueue;
             httpListener = new HttpListener();
-            httpListener.Prefixes.Add(httpMock.MockUri.ToString());
+            httpListener.Prefixes.Add(mockUrl.ToString());
             verificationMockResults = new List<VerificationResult>();
         }
 

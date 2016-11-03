@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HttpMocks.Implementation;
 using HttpMocks.Thens;
 using HttpMocks.Whens;
 
 namespace HttpMocks
 {
-    public class HttpMock : IHttpMock
+    internal class HttpMock : IHttpMock
     {
         private readonly IHttpMockRunner httpMockRunner;
         private readonly List<IInternalHttpRequestMockBuilder> internalHttpRequestMockBuilders;
@@ -20,11 +19,6 @@ namespace HttpMocks
         }
 
         public Uri MockUri { get; }
-
-        internal HttpRequestMock[] Build()
-        {
-            return internalHttpRequestMockBuilders.Select(b => b.Build()).ToArray();
-        }
 
         public IHttpRequestGetMockBuilder WhenRequestGet()
         {
@@ -47,7 +41,8 @@ namespace HttpMocks
 
         public void Run()
         {
-            httpMockRunner.RunMock(this);
+            var httpRequestMocks = internalHttpRequestMockBuilders.Select(b => b.Build()).ToArray();
+            httpMockRunner.RunMocks(MockUri, httpRequestMocks);
         }
 
         public void Dispose()

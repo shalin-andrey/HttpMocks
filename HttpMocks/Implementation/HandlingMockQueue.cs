@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace HttpMocks.Implementation
 {
-    internal class HandlingMockQueue
+    internal class HandlingMockQueue : IHandlingMockQueue
     {
         private readonly List<HttpRequestMockHandlingInfo> handlingInfos;
 

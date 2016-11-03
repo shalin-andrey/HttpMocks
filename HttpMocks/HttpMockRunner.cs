@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HttpMocks.Implementation;
@@ -8,16 +9,21 @@ namespace HttpMocks
 {
     internal class HttpMockRunner : IHttpMockRunner
     {
-        private readonly List<StartedHttpMock> startedHttpMocks;
+        private readonly List<IStartedHttpMock> startedHttpMocks;
+        private readonly IHandlingMockQueueFactory handlingMockQueueFactory;
+        private readonly IStartedHttpMockFactory startedHttpMockFactory;
 
-        public HttpMockRunner()
+        public HttpMockRunner(IHandlingMockQueueFactory handlingMockQueueFactory, IStartedHttpMockFactory startedHttpMockFactory)
         {
-            startedHttpMocks = new List<StartedHttpMock>();
+            this.handlingMockQueueFactory = handlingMockQueueFactory;
+            this.startedHttpMockFactory = startedHttpMockFactory;
+            startedHttpMocks = new List<IStartedHttpMock>();
         }
 
-        public void RunMock(HttpMock httpMock)
+        public void RunMocks(Uri mockUrl, HttpRequestMock[] httpRequestMocks)
         {
-            var startedHttpMock = new StartedHttpMock(httpMock);
+            var handlingMockQueue = handlingMockQueueFactory.Create(httpRequestMocks);
+            var startedHttpMock = startedHttpMockFactory.Create(mockUrl, handlingMockQueue);
             startedHttpMock.Start();
 
             startedHttpMocks.Add(startedHttpMock);

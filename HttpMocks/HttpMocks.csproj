@@ -43,6 +43,12 @@
     <Compile Include="HttpMockRunner.cs" />
     <Compile Include="IHttpMock.cs" />
     <Compile Include="IHttpMockRunner.cs" />
+    <Compile Include="Implementation\HandlingMockQueueFactory.cs" />
+    <Compile Include="Implementation\IHandlingMockQueue.cs" />
+    <Compile Include="Implementation\IHandlingMockQueueFactory.cs" />
+    <Compile Include="Implementation\IStartedHttpMock.cs" />
+    <Compile Include="Implementation\IStartedHttpMockFactory.cs" />
+    <Compile Include="Implementation\StartedHttpMockFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Implementation\HandlingMockQueue.cs" />
     <Compile Include="Implementation\HttpMockPortGenerator.cs" />
