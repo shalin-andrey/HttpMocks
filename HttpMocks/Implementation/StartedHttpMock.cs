@@ -114,8 +114,9 @@ namespace HttpMocks.Implementation
 
             if (!handlingInfo.HasAttempts())
             {
-                var verificationResult = VerificationResult.Create($"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path} repeat" +
-                                                                   $" count {handlingInfo.UsageCount}, but max expected repeat count {handlingInfo.ResponseMock.RepeatCount}.");
+                var verificationResult = VerificationResult.Create(
+                    $"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path} repeat" +
+                    $" count {handlingInfo.UsageCount}, but max expected repeat count {handlingInfo.ResponseMock.RepeatCount}.");
                 verificationMockResults.Add(verificationResult);
                 return HttpResponseInfo.Create(500);
             }
