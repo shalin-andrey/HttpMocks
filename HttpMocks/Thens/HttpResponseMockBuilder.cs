@@ -36,6 +36,8 @@ namespace HttpMocks.Thens
 
         public IHttpResponseMock Content(byte[] contentBytes, string contentType)
         {
+            if (contentBytes == null) throw new ArgumentNullException(nameof(contentBytes));
+
             httpResponseMock.Content = new HttpResponseMockContent(contentBytes, contentType);
 
             return this;

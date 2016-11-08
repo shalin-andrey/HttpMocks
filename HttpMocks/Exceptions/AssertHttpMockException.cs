@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HttpMocks.Verifications
+namespace HttpMocks.Exceptions
 {
     [Serializable]
     public class AssertHttpMockException : Exception

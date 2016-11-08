@@ -38,6 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\AssertHttpMockException.cs" />
     <Compile Include="HttpMock.cs" />
     <Compile Include="HttpMockRepository.cs" />
     <Compile Include="HttpMockRunner.cs" />
@@ -63,12 +64,9 @@
     <Compile Include="Thens\HttpResponseMock.cs" />
     <Compile Include="Thens\ICustomHttpResponseMock.cs" />
     <Compile Include="Thens\IHttpResponseMockBuilder.cs" />
-    <Compile Include="Verifications\IVerificationResultCollection.cs" />
-    <Compile Include="Verifications\VerificationResultCollection.cs" />
     <Compile Include="Whens\HttpRequestMockBuilder.cs" />
     <Compile Include="Whens\HttpRequestMockContent.cs" />
     <Compile Include="Whens\IHttpRequestMock.cs" />
-    <Compile Include="Verifications\AssertHttpMockException.cs" />
     <Compile Include="Verifications\VerificationResult.cs" />
     <Compile Include="Thens\HttpResponseMockBuilder.cs" />
     <Compile Include="Thens\HttpResponseMockContent.cs" />

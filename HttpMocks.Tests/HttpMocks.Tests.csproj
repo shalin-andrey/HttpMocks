@@ -61,10 +61,14 @@
     <Compile Include="Integrational\IntegrationalTest.cs" />
     <Compile Include="Integrational\TestResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Unit\Implementation\HandlingMockQueueTests.cs" />
     <Compile Include="Unit\Implementation\HttpMockPortGeneratorTests.cs" />
     <Compile Include="Unit\Implementation\HttpMockRunnerTests.cs" />
     <Compile Include="Unit\Implementation\HttpPathPatternTests.cs" />
+    <Compile Include="Unit\Implementation\HttpRequestPatternTests.cs" />
+    <Compile Include="Unit\Thens\HttpResponseMockBuilderTests.cs" />
     <Compile Include="Unit\Implementation\UnitTest.cs" />
+    <Compile Include="Unit\Whens\HttpRequestMockBuilderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

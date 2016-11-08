@@ -4,7 +4,7 @@ using HttpMocks.Implementation;
 
 namespace HttpMocks.Thens
 {
-    public class HttpResponseMock
+    internal class HttpResponseMock
     {
         public HttpResponseMock()
         {

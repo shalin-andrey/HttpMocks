@@ -1,4 +1,4 @@
-﻿namespace HttpMocks
+﻿namespace HttpMocks.Whens
 {
     public class HttpRequestMockContent
     {

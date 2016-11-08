@@ -9,6 +9,7 @@ namespace HttpMocks.Implementation
         private readonly int maxPortValue;
         private const int defaultMinPortValue = 20000;
         private const int defaultMaxPortValue = 60000;
+        private const int maxTryCount = 100;
         private readonly HashSet<int> actualPorts;
         private readonly Random random;
 
@@ -33,9 +34,9 @@ namespace HttpMocks.Implementation
             {
                 newPort = random.Next(minPortValue, maxPortValue);
                 tryCount++;
-            } while (actualPorts.Contains(newPort) && tryCount < 10);
+            } while (actualPorts.Contains(newPort) && tryCount < maxTryCount);
 
-            if (tryCount >= 10)
+            if (tryCount >= maxTryCount)
             {
                 throw new Exception($"Generate new port '{newPort}' error");
             }

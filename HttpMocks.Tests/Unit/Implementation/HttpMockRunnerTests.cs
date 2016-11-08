@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
 using HttpMocks.Verifications;
 using Moq;

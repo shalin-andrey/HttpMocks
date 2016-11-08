@@ -1,9 +1,10 @@
 ﻿using System.Collections.Specialized;
 using HttpMocks.Thens;
+using HttpMocks.Whens;
 
 namespace HttpMocks.Implementation
 {
-    public class HttpRequestMock
+    internal class HttpRequestMock
     {
         public HttpRequestMock(string method, string pathPattern)
         {

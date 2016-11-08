@@ -16,10 +16,10 @@ namespace HttpMocks.Implementation
         {
             lock (handlingInfos)
             {
-                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(method, path) && !i.HasAttempts());
+                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(method, path) && i.HasAttempts());
                 if (handlingInfo == null)
                 {
-                    handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(method, path));
+                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(method, path));
                 }
 
                 handlingInfo?.IncreaseUsageCount();

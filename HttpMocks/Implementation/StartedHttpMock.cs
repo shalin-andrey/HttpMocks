@@ -118,7 +118,7 @@ namespace HttpMocks.Implementation
                 return HttpResponseInfo.Create(500);
             }
 
-            if (!handlingInfo.HasAttempts())
+            if (!handlingInfo.IsUsageCountValid())
             {
                 var verificationResult = VerificationResult.Create(
                     $"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path} repeat" +

@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using FluentAssertions;
-using HttpMocks.Verifications;
+using HttpMocks.Exceptions;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Integrational

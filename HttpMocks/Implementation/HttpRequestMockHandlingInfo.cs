@@ -18,6 +18,11 @@ namespace HttpMocks.Implementation
 
         public bool HasAttempts()
         {
+            return ResponseMock.RepeatCount > UsageCount;
+        }
+
+        public bool IsUsageCountValid()
+        {
             return ResponseMock.RepeatCount >= UsageCount;
         }
 

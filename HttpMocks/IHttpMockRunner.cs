@@ -3,7 +3,7 @@ using HttpMocks.Implementation;
 
 namespace HttpMocks
 {
-    public interface IHttpMockRunner
+    internal interface IHttpMockRunner
     {
         void RunMocks(Uri mockUrl, HttpRequestMock[] httpRequestMocks);
         void VerifyAll();
