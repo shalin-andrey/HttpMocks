@@ -1,9 +1,9 @@
-﻿using HttpMocks.Thens;
+﻿using HttpMocks.Implementation;
 
 namespace HttpMocks.Whens
 {
-    public interface IHttpRequestMockBuilder
+    internal interface IHttpRequestMockBuilder : IHttpRequestMock
     {
-        IHttpResponseMockBuilder ThenResponse(int statusCode);
+        HttpRequestMock Build();
     }
 }

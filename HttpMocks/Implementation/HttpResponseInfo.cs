@@ -20,9 +20,9 @@ namespace HttpMocks.Implementation
             return Create(statusCode, new byte[0], null, new NameValueCollection());
         }
 
-        public NameValueCollection Headers { get; private set; }
-        public byte[] ContentBytes { get; private set; }
-        public int StatusCode { get; private set; }
-        public string ContentType { get; private set; }
+        public int StatusCode { get; set; }
+        public NameValueCollection Headers { get; set; }
+        public byte[] ContentBytes { get; set; }
+        public string ContentType { get; set; }
     }
 }

@@ -1,19 +1,21 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
+using HttpMocks.Implementation;
 
 namespace HttpMocks.Thens
 {
     public class HttpResponseMock
     {
-        public HttpResponseMock(int statusCode)
+        public HttpResponseMock()
         {
-            StatusCode = statusCode;
             Headers = new NameValueCollection();
             RepeatCount = 1;
         }
 
-        public int StatusCode { get; }
+        public int StatusCode { get; set; }
         public HttpResponseMockContent Content { get; set; }
         public NameValueCollection Headers { get; private set; }
         public int RepeatCount { get; set; }
+        public Func<HttpRequestInfo, HttpResponseInfo> ResponseInfoBuilder { get; set; }
     }
 }

@@ -107,7 +107,7 @@ namespace HttpMocks.Tests.Integrational
             httpMock
                 .WhenRequestGet("/bills")
                 .ThenResponse(200)
-                .ThenContent(content, "text/plain");
+                .Content(content, "text/plain");
             httpMock.Run();
 
             var url = BuildUrl(httpMock, "/bills");

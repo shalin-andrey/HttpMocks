@@ -51,7 +51,10 @@ namespace HttpMocks.Implementation
                 {
                     context.Response.SendChunked = false;
 
-                    var requestContentBytes = await ReadInputStreamAsync(context.Request.ContentLength64, context.Request.InputStream).ConfigureAwait(false);
+                    var requestContentBytes =
+                        await
+                            ReadInputStreamAsync(context.Request.ContentLength64, context.Request.InputStream)
+                                .ConfigureAwait(false);
                     var httpRequestInfo = HttpRequestInfo.Create(context.Request.HttpMethod,
                         context.Request.Url.LocalPath, context.Request.QueryString,
                         context.Request.Headers, requestContentBytes);
@@ -60,7 +63,7 @@ namespace HttpMocks.Implementation
                 }
                 catch (Exception e)
                 {
-                    var verificationResult = VerificationResult.Create($"Unhandle exception: {e}");
+                    var verificationResult = VerificationResult.Create($"Unhandled exception: {e}");
                     verificationMockResults.Add(verificationResult);
                     context.Response.StatusCode = 500;
                 }
@@ -96,7 +99,9 @@ namespace HttpMocks.Implementation
             {
                 context.Response.ContentType = httpResponseInfo.ContentType;
                 context.Response.ContentLength64 = httpResponseInfo.ContentBytes.Length;
-                await context.Response.OutputStream.WriteAsync(httpResponseInfo.ContentBytes, 0, contentBytesLength).ConfigureAwait(false);
+                await
+                    context.Response.OutputStream.WriteAsync(httpResponseInfo.ContentBytes, 0, contentBytesLength)
+                        .ConfigureAwait(false);
                 await context.Response.OutputStream.FlushAsync().ConfigureAwait(false);
             }
         }
@@ -107,7 +112,8 @@ namespace HttpMocks.Implementation
 
             if (handlingInfo == null)
             {
-                var verificationResult = VerificationResult.Create($"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path}, but not expected.");
+                var verificationResult = VerificationResult.Create(
+                    $"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path}, but not expected.");
                 verificationMockResults.Add(verificationResult);
                 return HttpResponseInfo.Create(500);
             }
@@ -123,8 +129,27 @@ namespace HttpMocks.Implementation
 
             var httpResponseMock = handlingInfo.ResponseMock;
 
+            if (httpResponseMock.ResponseInfoBuilder != null)
+            {
+                return SafeInvokeResponseInfoBuilder(httpResponseMock.ResponseInfoBuilder, httpRequestInfo);
+            }
+
             return HttpResponseInfo.Create(httpResponseMock.StatusCode, httpResponseMock.Content.Bytes,
                 httpResponseMock.Content.Type, httpResponseMock.Headers);
+        }
+
+        private HttpResponseInfo SafeInvokeResponseInfoBuilder(Func<HttpRequestInfo, HttpResponseInfo> responseInfoBuilder, HttpRequestInfo httpRequestInfo)
+        {
+            try
+            {
+                return responseInfoBuilder(httpRequestInfo);
+            }
+            catch (Exception e)
+            {
+                var verificationResult = VerificationResult.Create($"Unhandled exception from response info builder: {e}");
+                verificationMockResults.Add(verificationResult);
+                return HttpResponseInfo.Create(500);
+            }
         }
 
         private static async Task<byte[]> ReadInputStreamAsync(long contentLength, Stream stream)

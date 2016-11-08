@@ -44,6 +44,7 @@
     <Compile Include="IHttpMock.cs" />
     <Compile Include="IHttpMockRunner.cs" />
     <Compile Include="Implementation\HandlingMockQueueFactory.cs" />
+    <Compile Include="Implementation\HttpResponseInfoBuilder.cs" />
     <Compile Include="Implementation\IHandlingMockQueue.cs" />
     <Compile Include="Implementation\IHandlingMockQueueFactory.cs" />
     <Compile Include="Implementation\IStartedHttpMock.cs" />
@@ -60,21 +61,19 @@
     <Compile Include="Implementation\HttpResponseInfo.cs" />
     <Compile Include="Implementation\StartedHttpMock.cs" />
     <Compile Include="Thens\HttpResponseMock.cs" />
-    <Compile Include="Thens\IInternalHttpResponseMockBuilder.cs" />
-    <Compile Include="Whens\HttpRequestWithoutContentMockBuilder.cs" />
+    <Compile Include="Thens\ICustomHttpResponseMock.cs" />
+    <Compile Include="Thens\IHttpResponseMockBuilder.cs" />
+    <Compile Include="Verifications\IVerificationResultCollection.cs" />
+    <Compile Include="Verifications\VerificationResultCollection.cs" />
+    <Compile Include="Whens\HttpRequestMockBuilder.cs" />
     <Compile Include="Whens\HttpRequestMockContent.cs" />
-    <Compile Include="Whens\HttpRequestWithContentMockBuilder.cs" />
-    <Compile Include="Whens\IHttpRequestDeleteMockBuilder.cs" />
-    <Compile Include="Whens\IHttpRequestGetMockBuilder.cs" />
-    <Compile Include="Whens\IHttpRequestHeadMockBuilder.cs" />
-    <Compile Include="Whens\IHttpRequestMockBuilder.cs" />
-    <Compile Include="Whens\IHttpRequestPostMockBuilder.cs" />
+    <Compile Include="Whens\IHttpRequestMock.cs" />
     <Compile Include="Verifications\AssertHttpMockException.cs" />
     <Compile Include="Verifications\VerificationResult.cs" />
     <Compile Include="Thens\HttpResponseMockBuilder.cs" />
     <Compile Include="Thens\HttpResponseMockContent.cs" />
-    <Compile Include="Thens\IHttpResponseMockBuilder.cs" />
-    <Compile Include="Whens\IInternalHttpRequestMockBuilder.cs" />
+    <Compile Include="Thens\IHttpResponseMock.cs" />
+    <Compile Include="Whens\IHttpRequestMockBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
