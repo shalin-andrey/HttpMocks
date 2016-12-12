@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
 using FluentAssertions;
 using HttpMocks.Exceptions;
+using HttpMocks.Implementation;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Integrational
@@ -136,6 +138,33 @@ namespace HttpMocks.Tests.Integrational
             response.ContentBytes.Length.ShouldBeEquivalentTo(0);
 
             httpMocks.Invoking(m => m.VerifyAll()).ShouldThrowExactly<AssertHttpMockException>();
+        }
+
+        [Test]
+        public void TestSuccessWhenResponseFromDelegate()
+        {
+            var paths = new List<string>();
+            var httpMock = httpMocks.New("localhost");
+            httpMock
+                .WhenRequestGet("/bills/@guid")
+                .ThenResponse(i => ProcessRequestInfo(i, paths));
+            httpMock.Run();
+
+            var guid = Guid.NewGuid();
+            var url = BuildUrl(httpMock, $"/bills/{guid}");
+            var response = Send(url, "GET");
+
+            response.StatusCode.ShouldBeEquivalentTo(200);
+            response.ContentBytes.Length.ShouldBeEquivalentTo(0);
+
+            paths.Count.ShouldBeEquivalentTo(1);
+            paths[0].ShouldBeEquivalentTo($"/bills/{guid}");
+        }
+
+        private static HttpResponseInfo ProcessRequestInfo(HttpRequestInfo requestInfo, List<string> paths)
+        {
+            paths.Add(requestInfo.Path);
+            return HttpResponseInfo.Create(200);
         }
 
         private static Uri BuildUrl(IHttpMock httpMock, string path)
