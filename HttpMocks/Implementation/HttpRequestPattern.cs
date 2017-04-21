@@ -1,23 +1,26 @@
 ﻿using System;
+using HttpMocks.Whens;
 
 namespace HttpMocks.Implementation
 {
     public class HttpRequestPattern
     {
+        private readonly IHttpRequestMockContentPattern contentPattern;
         private readonly string methodPattern;
         private readonly HttpPathPattern pathPattern;
 
-        public HttpRequestPattern(string method, string pathPattern)
+        public HttpRequestPattern(string methodPattern, string pathPattern, IHttpRequestMockContentPattern contentPattern)
         {
-            methodPattern = method.ToLower();
+            this.contentPattern = contentPattern;
+            this.methodPattern = methodPattern.ToLower();
             this.pathPattern = new HttpPathPattern(pathPattern);
         }
 
-        public bool IsMatch(string method, string path)
+        public bool IsMatch(HttpRequestInfo httpRequestInfo)
         {
-            if (string.IsNullOrWhiteSpace(method)) throw new ArgumentNullException(nameof(method));
-
-            return string.Equals(methodPattern, method, StringComparison.OrdinalIgnoreCase) && pathPattern.IsMatch(path);
+            return string.Equals(methodPattern, httpRequestInfo.Method, StringComparison.OrdinalIgnoreCase)
+                && pathPattern.IsMatch(httpRequestInfo.Path)
+                && contentPattern.IsMatch(httpRequestInfo.ContentBytes, httpRequestInfo.ContentType);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HttpMocks</RootNamespace>
     <AssemblyName>HttpMocks</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -64,14 +65,19 @@
     <Compile Include="Thens\HttpResponseMock.cs" />
     <Compile Include="Thens\ICustomHttpResponseMock.cs" />
     <Compile Include="Thens\IHttpResponseMockBuilder.cs" />
+    <Compile Include="Whens\HttpRequestMockContentPatterns\AnyContentPattern.cs" />
+    <Compile Include="Whens\HttpRequestMockContentPatterns\Base64ContentPattern.cs" />
+    <Compile Include="Whens\HttpRequestMockContentPatterns\BinaryContentPattern.cs" />
+    <Compile Include="Whens\HttpRequestMockContentPatterns\ContentPatterns.cs" />
+    <Compile Include="Whens\HttpRequestMockContentPatterns\ContentPatternBase.cs" />
     <Compile Include="Whens\HttpRequestMockBuilder.cs" />
-    <Compile Include="Whens\HttpRequestMockContent.cs" />
     <Compile Include="Whens\IHttpRequestMock.cs" />
     <Compile Include="Verifications\VerificationResult.cs" />
     <Compile Include="Thens\HttpResponseMockBuilder.cs" />
     <Compile Include="Thens\HttpResponseMockContent.cs" />
     <Compile Include="Thens\IHttpResponseMock.cs" />
     <Compile Include="Whens\IHttpRequestMockBuilder.cs" />
+    <Compile Include="Whens\IHttpRequestMockContentPattern.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

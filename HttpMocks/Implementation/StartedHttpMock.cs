@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -54,8 +55,10 @@ namespace HttpMocks.Implementation
                     var requestContentBytes = await ReadInputStreamAsync(context.Request.ContentLength64, context.Request.InputStream).ConfigureAwait(false);
                     var httpRequestInfo = HttpRequestInfo.Create(context.Request.HttpMethod,
                         context.Request.Url.LocalPath, context.Request.QueryString,
-                        context.Request.Headers, requestContentBytes);
-                    var httpResponseInfo = ProcessRequest(httpRequestInfo);
+                        context.Request.Headers, 
+                        requestContentBytes,
+                        context.Request.ContentType);
+
                     LogHttpRequestInfo(httpRequestInfo);
                     var httpResponseInfo = await ProcessRequestAsync(httpRequestInfo).ConfigureAwait(false);
                     LogHttpResponseInfo(httpResponseInfo);
@@ -135,16 +138,14 @@ namespace HttpMocks.Implementation
             {
                 context.Response.ContentType = httpResponseInfo.ContentType;
                 context.Response.ContentLength64 = httpResponseInfo.ContentBytes.Length;
-                await
-                    context.Response.OutputStream.WriteAsync(httpResponseInfo.ContentBytes, 0, contentBytesLength)
-                        .ConfigureAwait(false);
+                await context.Response.OutputStream.WriteAsync(httpResponseInfo.ContentBytes, 0, contentBytesLength).ConfigureAwait(false);
                 await context.Response.OutputStream.FlushAsync().ConfigureAwait(false);
             }
         }
 
         private async Task<HttpResponseInfo> ProcessRequestAsync(HttpRequestInfo httpRequestInfo)
         {
-            var handlingInfo = handlingMockQueue.Dequeue(httpRequestInfo.Method, httpRequestInfo.Path);
+            var handlingInfo = handlingMockQueue.Dequeue(httpRequestInfo);
 
             if (handlingInfo == null)
             {

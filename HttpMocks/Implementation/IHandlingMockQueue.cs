@@ -2,6 +2,6 @@
 {
     internal interface IHandlingMockQueue
     {
-        HttpRequestMockHandlingInfo Dequeue(string method, string path);
+        HttpRequestMockHandlingInfo Dequeue(HttpRequestInfo httpRequestInfo);
     }
 }

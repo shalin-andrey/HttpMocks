@@ -25,13 +25,13 @@ namespace HttpMocks.Tests.Unit.Implementation
 
             mockUrl = new Uri("http://localhost/");
 
-            handlingMockQueueFactoryMock = new Mock<IHandlingMockQueueFactory>(MockBehavior.Strict);
-            startedHttpMockFactoryMock = new Mock<IStartedHttpMockFactory>(MockBehavior.Strict);
+            handlingMockQueueFactoryMock = NewMock<IHandlingMockQueueFactory>();
+            startedHttpMockFactoryMock = NewMock<IStartedHttpMockFactory>();
             httpMockRunner = new HttpMockRunner(handlingMockQueueFactoryMock.Object, startedHttpMockFactoryMock.Object);
 
             httpRequestMocks = new HttpRequestMock[0];
-            handlingMockQueueMock = new Mock<IHandlingMockQueue>(MockBehavior.Strict);
-            startedHttpMock = new Mock<IStartedHttpMock>(MockBehavior.Strict);
+            handlingMockQueueMock = NewMock<IHandlingMockQueue>();
+            startedHttpMock = NewMock<IStartedHttpMock>();
 
             handlingMockQueueFactoryMock.Setup(x => x.Create(httpRequestMocks)).Returns(handlingMockQueueMock.Object);
             startedHttpMockFactoryMock.Setup(x => x.Create(mockUrl, handlingMockQueueMock.Object)).Returns(startedHttpMock.Object);

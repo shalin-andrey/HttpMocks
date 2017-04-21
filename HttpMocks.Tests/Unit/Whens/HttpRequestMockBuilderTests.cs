@@ -3,6 +3,7 @@ using System.Text;
 using FluentAssertions;
 using HttpMocks.Implementation;
 using HttpMocks.Whens;
+using HttpMocks.Whens.HttpRequestMockContentPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation.Whens
@@ -30,14 +31,23 @@ namespace HttpMocks.Tests.Unit.Implementation.Whens
         [Test]
         public void TestContent()
         {
-            Func<byte[]> contentBytesFunc = () => Encoding.UTF8.GetBytes("contentBytes");
             const string contentType = "text/string";
-
-            httpRequestMockBuilder.Content(contentBytesFunc(), contentType);
+            var contentBytes = Encoding.UTF8.GetBytes("contentBytes");
+            httpRequestMockBuilder.Content(contentBytes, contentType);
             var httpRequestMock = httpRequestMockBuilder.Build();
 
-            httpRequestMock.Content.Bytes.ShouldBeEquivalentTo(contentBytesFunc());
-            httpRequestMock.Content.Type.ShouldBeEquivalentTo(contentType);
+            httpRequestMock.ContentPattern.Should().BeOfType<BinaryContentPattern>();
+        }
+
+        [Test]
+        public void TestContentPattern()
+        {
+            var contentPattern = ContentPatterns.Any();
+
+            httpRequestMockBuilder.Content(contentPattern);
+            var httpRequestMock = httpRequestMockBuilder.Build();
+
+            httpRequestMock.ContentPattern.ShouldBeEquivalentTo(contentPattern);
         }
 
         [Test]

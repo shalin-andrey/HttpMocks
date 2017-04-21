@@ -12,14 +12,14 @@ namespace HttpMocks.Implementation
             handlingInfos = new List<HttpRequestMockHandlingInfo>(GetRequestMockHandlingInfos(httpRequestMocks));
         }
 
-        public HttpRequestMockHandlingInfo Dequeue(string method, string path)
+        public HttpRequestMockHandlingInfo Dequeue(HttpRequestInfo httpRequestInfo)
         {
             lock (handlingInfos)
             {
-                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(method, path) && i.HasAttempts());
+                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(httpRequestInfo) && i.HasAttempts());
                 if (handlingInfo == null)
                 {
-                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(method, path));
+                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(httpRequestInfo));
                 }
 
                 handlingInfo?.IncreaseUsageCount();
@@ -30,7 +30,7 @@ namespace HttpMocks.Implementation
         private IEnumerable<HttpRequestMockHandlingInfo> GetRequestMockHandlingInfos(IEnumerable<HttpRequestMock> requestMocks)
         {
             return requestMocks
-                .Select(r => new HttpRequestMockHandlingInfo(new HttpRequestPattern(r.Method, r.PathPattern), r.Response))
+                .Select(r => new HttpRequestMockHandlingInfo(new HttpRequestPattern(r.MethodPattern, r.PathPattern, r.ContentPattern), r.Response))
                 .ToArray();
         }
     }

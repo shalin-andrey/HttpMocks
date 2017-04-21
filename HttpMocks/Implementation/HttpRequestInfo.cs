@@ -4,7 +4,7 @@ namespace HttpMocks.Implementation
 {
     public class HttpRequestInfo
     {
-        public static HttpRequestInfo Create(string method, string path, NameValueCollection query, NameValueCollection headers, byte[] contentBytes)
+        public static HttpRequestInfo Create(string method, string path, NameValueCollection query, NameValueCollection headers, byte[] contentBytes, string contentType)
         {
             return new HttpRequestInfo
             {
@@ -21,5 +21,6 @@ namespace HttpMocks.Implementation
         public NameValueCollection Query { get; set; }
         public string Path { get; set; }
         public byte[] ContentBytes { get; set; }
+        public string ContentType { get; set; }
     }
 }

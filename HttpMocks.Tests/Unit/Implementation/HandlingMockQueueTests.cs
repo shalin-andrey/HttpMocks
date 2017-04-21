@@ -11,7 +11,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         public void TestDequeueWhenEmpty()
         {
             var handlingMockQueue = new HandlingMockQueue(new HttpRequestMock[0]);
-            handlingMockQueue.Dequeue("get", "/").Should().BeNull();
+            handlingMockQueue.Dequeue(CreateRequestInfo("get", "/")).Should().BeNull();
         }
 
         [Test]
@@ -20,14 +20,14 @@ namespace HttpMocks.Tests.Unit.Implementation
             var mocks = new[] {CreateMock("get")};
             var handlingMockQueue = new HandlingMockQueue(mocks);
 
-            var handlingInfo = handlingMockQueue.Dequeue("get", "/");
+            var handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
 
             handlingInfo.Should().NotBeNull();
             handlingInfo.IsUsageCountValid().Should().BeTrue();
             handlingInfo.HasAttempts().Should().BeFalse();
             handlingInfo.UsageCount.ShouldBeEquivalentTo(1);
 
-            handlingInfo = handlingMockQueue.Dequeue("get", "/");
+            handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
 
             handlingInfo.Should().NotBeNull();
             handlingInfo.IsUsageCountValid().Should().BeFalse();
@@ -41,14 +41,14 @@ namespace HttpMocks.Tests.Unit.Implementation
             var mocks = new[] {CreateMock("get"), CreateMock("get")};
             var handlingMockQueue = new HandlingMockQueue(mocks);
 
-            var handlingInfo = handlingMockQueue.Dequeue("get", "/");
+            var handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
 
             handlingInfo.Should().NotBeNull();
             handlingInfo.IsUsageCountValid().Should().BeTrue();
             handlingInfo.HasAttempts().Should().BeFalse();
             handlingInfo.UsageCount.ShouldBeEquivalentTo(1);
 
-            handlingInfo = handlingMockQueue.Dequeue("get", "/");
+            handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
 
             handlingInfo.Should().NotBeNull();
             handlingInfo.IsUsageCountValid().Should().BeTrue();
@@ -63,27 +63,36 @@ namespace HttpMocks.Tests.Unit.Implementation
             var mocks = new[] {CreateMock("get"), httpRequestMock};
             var handlingMockQueue = new HandlingMockQueue(mocks);
 
-            var handlingInfo = handlingMockQueue.Dequeue("get", "/");
+            var handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
 
             handlingInfo.Should().NotBeNull();
             handlingInfo.IsUsageCountValid().Should().BeTrue();
             handlingInfo.HasAttempts().Should().BeFalse();
             handlingInfo.UsageCount.ShouldBeEquivalentTo(1);
 
-            handlingInfo = handlingMockQueue.Dequeue("get", "/");
+            handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
 
             handlingInfo.Should().NotBeNull();
             handlingInfo.IsUsageCountValid().Should().BeTrue();
             handlingInfo.HasAttempts().Should().BeFalse();
             handlingInfo.UsageCount.ShouldBeEquivalentTo(1);
 
-            handlingInfo = handlingMockQueue.Dequeue("get", "/");
+            handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
 
             handlingInfo.Should().NotBeNull();
             handlingInfo.IsUsageCountValid().Should().BeFalse();
             handlingInfo.HasAttempts().Should().BeFalse();
             handlingInfo.UsageCount.ShouldBeEquivalentTo(2);
             handlingInfo.ResponseMock.Should().Be(httpRequestMock.Response);
+        }
+
+        private static HttpRequestInfo CreateRequestInfo(string methodPattern, string pathPattern)
+        {
+            return new HttpRequestInfo
+            {
+                Method = methodPattern,
+                Path = pathPattern
+            };
         }
 
         private static HttpRequestMock CreateMock(string method)

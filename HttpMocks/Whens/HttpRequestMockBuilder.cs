@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using HttpMocks.Implementation;
 using HttpMocks.Thens;
+using HttpMocks.Whens.HttpRequestMockContentPatterns;
 
 namespace HttpMocks.Whens
 {
@@ -15,11 +17,19 @@ namespace HttpMocks.Whens
             httpResponseMockBuilder = new HttpResponseMockBuilder(200);
         }
 
-        public IHttpRequestMock Content(byte[] contentBytes, string contentType)
+        public IHttpRequestMock Content(byte[] contentBytes, string contentType = null)
         {
             if (contentBytes == null) throw new ArgumentNullException(nameof(contentBytes));
 
-            httpRequestMock.Content = new HttpRequestMockContent(contentBytes, contentType);
+            httpRequestMock.ContentPattern = ContentPatterns.Binary(contentBytes, contentType);
+            return this;
+        }
+
+        public IHttpRequestMock Content(IHttpRequestMockContentPattern httpRequestMockContentPattern)
+        {
+            if (httpRequestMockContentPattern == null) throw new ArgumentNullException(nameof(httpRequestMockContentPattern));
+
+            httpRequestMock.ContentPattern = httpRequestMockContentPattern;
             return this;
         }
 
@@ -43,13 +53,18 @@ namespace HttpMocks.Whens
 
         public ICustomHttpResponseMock ThenResponse(Func<HttpRequestInfo, HttpResponseInfo> responseInfoBuilder)
         {
-            return httpResponseMockBuilder = new HttpResponseMockBuilder(responseInfoBuilder);
+            return httpResponseMockBuilder = new HttpResponseMockBuilder(httpRequestInfo => Task.FromResult(responseInfoBuilder(httpRequestInfo)));
         }
 
         public HttpRequestMock Build()
         {
             httpRequestMock.Response = httpResponseMockBuilder.Build();
             return httpRequestMock;
+        }
+
+        public ICustomHttpResponseMock ThenResponse(Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder)
+        {
+            return httpResponseMockBuilder = new HttpResponseMockBuilder(asyncResponseInfoBuilder);
         }
     }
 }
