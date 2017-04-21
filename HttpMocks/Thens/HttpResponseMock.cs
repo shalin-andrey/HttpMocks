@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 using HttpMocks.Implementation;
 
 namespace HttpMocks.Thens
@@ -16,6 +17,6 @@ namespace HttpMocks.Thens
         public HttpResponseMockContent Content { get; set; }
         public NameValueCollection Headers { get; private set; }
         public int RepeatCount { get; set; }
-        public Func<HttpRequestInfo, HttpResponseInfo> ResponseInfoBuilder { get; set; }
+        public Func<HttpRequestInfo, Task<HttpResponseInfo>> ResponseInfoBuilder { get; set; }
     }
 }

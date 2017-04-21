@@ -51,14 +51,14 @@ namespace HttpMocks.Implementation
                 {
                     context.Response.SendChunked = false;
 
-                    var requestContentBytes =
-                        await
-                            ReadInputStreamAsync(context.Request.ContentLength64, context.Request.InputStream)
-                                .ConfigureAwait(false);
+                    var requestContentBytes = await ReadInputStreamAsync(context.Request.ContentLength64, context.Request.InputStream).ConfigureAwait(false);
                     var httpRequestInfo = HttpRequestInfo.Create(context.Request.HttpMethod,
                         context.Request.Url.LocalPath, context.Request.QueryString,
                         context.Request.Headers, requestContentBytes);
                     var httpResponseInfo = ProcessRequest(httpRequestInfo);
+                    LogHttpRequestInfo(httpRequestInfo);
+                    var httpResponseInfo = await ProcessRequestAsync(httpRequestInfo).ConfigureAwait(false);
+                    LogHttpResponseInfo(httpResponseInfo);
                     await WriteResponseAsync(context, httpResponseInfo).ConfigureAwait(false);
                 }
                 catch (Exception e)
@@ -72,6 +72,42 @@ namespace HttpMocks.Implementation
                     context.Response.Close();
                 }
             }
+        }
+
+        private void LogHttpRequestInfo(HttpRequestInfo httpRequestInfo)
+        {
+            Console.WriteLine($"HM.Request: {httpRequestInfo.Method} {httpRequestInfo.Path}?{HttpQueryToString(httpRequestInfo.Query)}");
+            foreach (var headerName in httpRequestInfo.Headers.AllKeys)
+            {
+                var headerValue = httpRequestInfo.Headers[headerName];
+                Console.WriteLine($"HM.Request: {headerName}: {headerValue}");
+            }
+
+            Console.WriteLine("HM.Request:");
+            Console.WriteLine($"HM.Request: {httpRequestInfo.ContentBytes.Length}");
+        }
+
+        private void LogHttpResponseInfo(HttpResponseInfo httpResponseInfo)
+        {
+            Console.WriteLine($"HM.Response: HTTP/1.1 {httpResponseInfo.StatusCode}");
+            foreach (var headerName in httpResponseInfo.Headers.AllKeys)
+            {
+                var headerValue = httpResponseInfo.Headers[headerName];
+                Console.WriteLine($"HM.Response: {headerName}: {headerValue}");
+            }
+
+            Console.WriteLine("HM.Response:");
+            Console.WriteLine($"HM.Response: {httpResponseInfo.ContentBytes.Length}");
+        }
+
+        private string HttpQueryToString(NameValueCollection query)
+        {
+            var parameterAndValuePairs = new List<string>();
+            foreach (var parameterName in query.AllKeys)
+            {
+                parameterAndValuePairs.Add($"{parameterName}={query[parameterName]}");
+            }
+            return string.Join("&", parameterAndValuePairs);
         }
 
         private async Task<HttpListenerContext> SafeGetContextAsync()
@@ -106,7 +142,7 @@ namespace HttpMocks.Implementation
             }
         }
 
-        private HttpResponseInfo ProcessRequest(HttpRequestInfo httpRequestInfo)
+        private async Task<HttpResponseInfo> ProcessRequestAsync(HttpRequestInfo httpRequestInfo)
         {
             var handlingInfo = handlingMockQueue.Dequeue(httpRequestInfo.Method, httpRequestInfo.Path);
 
@@ -131,18 +167,18 @@ namespace HttpMocks.Implementation
 
             if (httpResponseMock.ResponseInfoBuilder != null)
             {
-                return SafeInvokeResponseInfoBuilder(httpResponseMock.ResponseInfoBuilder, httpRequestInfo);
+                return await SafeInvokeResponseInfoBuilderAsync(httpResponseMock.ResponseInfoBuilder, httpRequestInfo).ConfigureAwait(false);
             }
 
             return HttpResponseInfo.Create(httpResponseMock.StatusCode, httpResponseMock.Content.Bytes,
                 httpResponseMock.Content.Type, httpResponseMock.Headers);
         }
 
-        private HttpResponseInfo SafeInvokeResponseInfoBuilder(Func<HttpRequestInfo, HttpResponseInfo> responseInfoBuilder, HttpRequestInfo httpRequestInfo)
+        private async Task<HttpResponseInfo> SafeInvokeResponseInfoBuilderAsync(Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder, HttpRequestInfo httpRequestInfo)
         {
             try
             {
-                return responseInfoBuilder(httpRequestInfo);
+                return await asyncResponseInfoBuilder(httpRequestInfo).ConfigureAwait(false);
             }
             catch (Exception e)
             {

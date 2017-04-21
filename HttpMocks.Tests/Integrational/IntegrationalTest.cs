@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using FluentAssertions;
 using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
@@ -161,10 +162,37 @@ namespace HttpMocks.Tests.Integrational
             paths[0].ShouldBeEquivalentTo($"/bills/{guid}");
         }
 
+        [Test]
+        public void TestSuccessWhenResponseFromAsyncDelegate()
+        {
+            var paths = new List<string>();
+            var httpMock = httpMocks.New("localhost");
+            httpMock
+                .WhenRequestGet("/bills/@guid")
+                .ThenResponse(i => ProcessRequestInfoAsync(i, paths));
+            httpMock.Run();
+
+            var guid = Guid.NewGuid();
+            var url = BuildUrl(httpMock, $"/bills/{guid}");
+            var response = Send(url, "GET");
+
+            response.StatusCode.ShouldBeEquivalentTo(200);
+            response.ContentBytes.Length.ShouldBeEquivalentTo(0);
+
+            paths.Count.ShouldBeEquivalentTo(1);
+            paths[0].ShouldBeEquivalentTo($"/bills/{guid}");
+        }
+
         private static HttpResponseInfo ProcessRequestInfo(HttpRequestInfo requestInfo, List<string> paths)
         {
             paths.Add(requestInfo.Path);
             return HttpResponseInfo.Create(200);
+        }
+
+        private static Task<HttpResponseInfo> ProcessRequestInfoAsync(HttpRequestInfo requestInfo, List<string> paths)
+        {
+            paths.Add(requestInfo.Path);
+            return Task.FromResult(HttpResponseInfo.Create(200));
         }
 
         private static Uri BuildUrl(IHttpMock httpMock, string path)

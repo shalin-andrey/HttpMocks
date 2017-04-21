@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using HttpMocks.Implementation;
 
 namespace HttpMocks.Thens
@@ -7,13 +8,13 @@ namespace HttpMocks.Thens
     {
         private readonly HttpResponseMock httpResponseMock;
 
-        public HttpResponseMockBuilder(int statusCode, Func<HttpRequestInfo, HttpResponseInfo> responseInfoBuilder = null)
+        public HttpResponseMockBuilder(int statusCode, Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder = null)
         {
             httpResponseMock = new HttpResponseMock
             {
                 StatusCode = statusCode,
                 Content = HttpResponseMockContent.Empty,
-                ResponseInfoBuilder = responseInfoBuilder
+                ResponseInfoBuilder = asyncResponseInfoBuilder
             };
         }
 
@@ -22,8 +23,8 @@ namespace HttpMocks.Thens
         {
         }
 
-        public HttpResponseMockBuilder(Func<HttpRequestInfo, HttpResponseInfo> responseInfoBuilder)
-            : this(0, responseInfoBuilder)
+        public HttpResponseMockBuilder(Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder)
+            : this(0, asyncResponseInfoBuilder)
         {
         }
 
