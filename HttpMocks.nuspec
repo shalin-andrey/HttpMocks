@@ -10,7 +10,7 @@
     <tags>HttpMocks</tags>
   </metadata>
   <files>
-    <file src="bin\Release\HttpMocks.dll" />
-    <file src="bin\Release\HttpMocks.pdb" />
+    <file src="HttpMocks\bin\Release\HttpMocks.dll" />
+    <file src="HttpMocks\bin\Release\HttpMocks.pdb" />
   </files>
 </package>
