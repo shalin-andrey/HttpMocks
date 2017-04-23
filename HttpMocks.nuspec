@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>HttpMocks</id>
+    <version>$version$</version>
+    <authors>Shalin Andrey</authors>
+    <owners>Shalin Andrey</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Kontur</description>
+    <tags>HttpMocks</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\HttpMocks.dll" />
+    <file src="bin\Release\HttpMocks.pdb" />
+  </files>
+</package>
