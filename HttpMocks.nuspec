@@ -6,7 +6,7 @@
     <authors>Shalin Andrey</authors>
     <owners>Shalin Andrey</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Kontur</description>
+    <description>Library for integration testing. https://github.com/shalin-andrey/HttpMocks</description>
     <tags>HttpMocks</tags>
   </metadata>
   <files>
