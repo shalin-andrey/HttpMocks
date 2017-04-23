@@ -1,8 +1,11 @@
 ﻿using FluentAssertions;
 using HttpMocks.Implementation;
-using HttpMocks.Whens;
-using HttpMocks.Whens.HttpRequestMockContentPatterns;
-using Moq;
+using HttpMocks.Whens.RequestPatterns;
+using HttpMocks.Whens.RequestPatterns.ContentPatterns;
+using HttpMocks.Whens.RequestPatterns.HeadersPatterns;
+using HttpMocks.Whens.RequestPatterns.MethodPatterns;
+using HttpMocks.Whens.RequestPatterns.PathPatterns;
+using HttpMocks.Whens.RequestPatterns.QueryPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation
@@ -17,7 +20,15 @@ namespace HttpMocks.Tests.Unit.Implementation
         public void TestIsMatch(string method, string expectedMethod, bool expected)
         {
             const string pathPattern = "/";
-            var httpRequestPattern = new HttpRequestPattern(method, pathPattern, ContentPatterns.Any());
+            var httpRequestMock = new HttpRequestMock
+            {
+                Method = MethodPattern.Standart(method),
+                Path = PathPattern.Smart(pathPattern),
+                Query = QueryPattern.Any(),
+                Headers = HeadersPattern.Any(),
+                Content = ContentPattern.Any()
+            };
+            var httpRequestPattern = new HttpRequestPattern(httpRequestMock);
             var httpRequestInfo = new HttpRequestInfo
             {
                 Method = expectedMethod,
@@ -31,7 +42,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         [TestCase(false)]
         public void TestIsMatchWithContentPattern(bool isMatchResult)
         {
-            var contnetPatternMock = NewMock<IHttpRequestMockContentPattern>();
+            var contnetPatternMock = NewMock<IHttpRequestContentPattern>();
             const string method = "post";
             const string path = "/";
             var contentBytes = new byte[0];
@@ -39,7 +50,15 @@ namespace HttpMocks.Tests.Unit.Implementation
 
             contnetPatternMock.Setup(x => x.IsMatch(contentBytes, contentType)).Returns(isMatchResult);
 
-            var httpRequestPattern = new HttpRequestPattern(method, path, contnetPatternMock.Object);
+            var httpRequestMock = new HttpRequestMock
+            {
+                Method = MethodPattern.Standart(method),
+                Path = PathPattern.Smart(path),
+                Content = contnetPatternMock.Object,
+                Query = QueryPattern.Any(),
+                Headers = HeadersPattern.Any()
+            };
+            var httpRequestPattern = new HttpRequestPattern(httpRequestMock);
             var httpRequestInfo = new HttpRequestInfo
             {
                 Method = method,

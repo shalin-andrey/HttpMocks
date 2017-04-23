@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-namespace HttpMocks.Whens.HttpRequestMockContentPatterns
+namespace HttpMocks.Whens.RequestPatterns.ContentPatterns
 {
-    public class BinaryContentPattern : ContentPatternBase<byte[]>
+    public sealed class BinaryContentPattern : ContentPatternBase<byte[]>
     {
         internal static BinaryContentPattern Create(byte[] bytesPattern, string contentTypePattern = null)
         {

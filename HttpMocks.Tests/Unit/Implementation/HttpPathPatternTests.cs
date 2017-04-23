@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using HttpMocks.Implementation;
+using HttpMocks.Whens.RequestPatterns;
+using HttpMocks.Whens.RequestPatterns.PathPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation
@@ -12,7 +13,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         [TestCaseSource(nameof(GenerateTestCaseDatas))]
         public void TestIsMatchWhenUrlContainsGuid(string pattern, string value, bool expected)
         {
-            var httpPathPattern = new HttpPathPattern(pattern);
+            IHttpRequestPathPattern httpPathPattern = new SmartPathPattern(pattern);
             httpPathPattern.IsMatch(value).Should().Be(expected);
         }
 

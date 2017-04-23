@@ -3,7 +3,10 @@ using System.Text;
 using FluentAssertions;
 using HttpMocks.Implementation;
 using HttpMocks.Whens;
-using HttpMocks.Whens.HttpRequestMockContentPatterns;
+using HttpMocks.Whens.Extensions;
+using HttpMocks.Whens.RequestPatterns.ContentPatterns;
+using HttpMocks.Whens.RequestPatterns.MethodPatterns;
+using HttpMocks.Whens.RequestPatterns.PathPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation.Whens
@@ -16,16 +19,18 @@ namespace HttpMocks.Tests.Unit.Implementation.Whens
         {
             base.SetUp();
 
-            httpRequestMockBuilder = new HttpRequestMockBuilder("GET", "/");
+            httpRequestMockBuilder = new HttpRequestMockBuilder();
+            httpRequestMockBuilder.Method(MethodPattern.Standart("GET"));
+            httpRequestMockBuilder.Path(PathPattern.Smart("/"));
         }
 
         [Test]
         public void TestContentFailWhenContentBytesIsNull()
         {
             httpRequestMockBuilder
-                .Invoking(x => x.Content(null, null))
+                .Invoking(x => x.Content(null))
                 .ShouldThrow<ArgumentNullException>()
-                .Where(x => x.Message.Contains("contentBytes"));
+                .Where(x => x.Message.Contains("httpRequestContentPattern"));
         }
 
         [Test]
@@ -36,45 +41,27 @@ namespace HttpMocks.Tests.Unit.Implementation.Whens
             httpRequestMockBuilder.Content(contentBytes, contentType);
             var httpRequestMock = httpRequestMockBuilder.Build();
 
-            httpRequestMock.ContentPattern.Should().BeOfType<BinaryContentPattern>();
+            httpRequestMock.Content.Should().BeOfType<BinaryContentPattern>();
         }
 
         [Test]
         public void TestContentPattern()
         {
-            var contentPattern = ContentPatterns.Any();
+            var contentPattern = ContentPattern.Any();
 
             httpRequestMockBuilder.Content(contentPattern);
             var httpRequestMock = httpRequestMockBuilder.Build();
 
-            httpRequestMock.ContentPattern.ShouldBeEquivalentTo(contentPattern);
+            httpRequestMock.Content.ShouldBeEquivalentTo(contentPattern);
         }
 
         [Test]
-        public void TestHeaderFailWhenHeaderNameIsEmpty()
+        public void TestHeaderFailWhenHeadersIsEmpty()
         {
             httpRequestMockBuilder
-                .Invoking(x => x.Header(null, "headerValue"))
+                .Invoking(x => x.Headers(null))
                 .ShouldThrow<ArgumentNullException>()
-                .Where(x => x.Message.Contains("headerName"));
-
-            httpRequestMockBuilder
-                .Invoking(x => x.Header(string.Empty, "headerValue"))
-                .ShouldThrow<ArgumentNullException>()
-                .Where(x => x.Message.Contains("headerName"));
-        }
-
-        [Test]
-        public void TestHeader()
-        {
-            const string headerName = "headerName1";
-            const string headervalue1 = "headerValue1";
-
-            httpRequestMockBuilder.Header(headerName, "headerValue1");
-
-            var httpRequestMock = httpRequestMockBuilder.Build();
-            httpRequestMock.Headers.Keys.Count.ShouldBeEquivalentTo(1);
-            httpRequestMock.Headers[headerName].ShouldBeEquivalentTo(headervalue1);
+                .Where(x => x.Message.Contains("httpRequestHeadersPattern"));
         }
 
         [Test]

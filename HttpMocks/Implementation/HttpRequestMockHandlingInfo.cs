@@ -1,4 +1,5 @@
 ﻿using HttpMocks.Thens;
+using HttpMocks.Whens.RequestPatterns;
 
 namespace HttpMocks.Implementation
 {

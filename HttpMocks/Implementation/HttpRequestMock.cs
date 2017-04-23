@@ -1,24 +1,15 @@
-﻿using System.Collections.Specialized;
-using HttpMocks.Thens;
-using HttpMocks.Whens;
-using HttpMocks.Whens.HttpRequestMockContentPatterns;
+﻿using HttpMocks.Thens;
+using HttpMocks.Whens.RequestPatterns;
 
 namespace HttpMocks.Implementation
 {
     internal class HttpRequestMock
     {
-        public HttpRequestMock(string methodPattern, string pathPattern)
-        {
-            MethodPattern = methodPattern;
-            PathPattern = pathPattern;
-            Headers = new NameValueCollection();
-            ContentPattern = ContentPatterns.Any();
-        }
-
-        public string MethodPattern { get; private set; }
-        public string PathPattern { get; private set; }
-        public NameValueCollection Headers { get; private set; }
-        public IHttpRequestMockContentPattern ContentPattern { get; set; }
+        public IHttpRequestMethodPattern Method { get;  set; }
+        public IHttpRequestPathPattern Path { get; set; }
+        public IHttpRequestHeadersPattern Headers { get; set; }
+        public IHttpRequestQueryPattern Query { get; set; }
+        public IHttpRequestContentPattern Content { get; set; }
         public HttpResponseMock Response { get; set; }
     }
 }

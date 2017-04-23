@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace HttpMocks.Whens.HttpRequestMockContentPatterns
+namespace HttpMocks.Whens.RequestPatterns.ContentPatterns
 {
-    public abstract class ContentPatternBase<T> : IHttpRequestMockContentPattern
+    public abstract class ContentPatternBase<T> : IHttpRequestContentPattern
     {
         private readonly Func<T, string, bool> contentIsMatch;
 
@@ -11,7 +11,7 @@ namespace HttpMocks.Whens.HttpRequestMockContentPatterns
             this.contentIsMatch = contentIsMatch;
         }
 
-        bool IHttpRequestMockContentPattern.IsMatch(byte[] contentBytes, string contentType)
+        bool IHttpRequestContentPattern.IsMatch(byte[] contentBytes, string contentType)
         {
             var parsedContent = ParseContentFromBytes(contentBytes);
             return contentIsMatch(parsedContent, contentType);

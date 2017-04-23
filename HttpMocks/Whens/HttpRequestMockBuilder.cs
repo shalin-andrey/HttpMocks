@@ -2,7 +2,12 @@
 using System.Threading.Tasks;
 using HttpMocks.Implementation;
 using HttpMocks.Thens;
-using HttpMocks.Whens.HttpRequestMockContentPatterns;
+using HttpMocks.Whens.RequestPatterns;
+using HttpMocks.Whens.RequestPatterns.ContentPatterns;
+using HttpMocks.Whens.RequestPatterns.HeadersPatterns;
+using HttpMocks.Whens.RequestPatterns.MethodPatterns;
+using HttpMocks.Whens.RequestPatterns.PathPatterns;
+using HttpMocks.Whens.RequestPatterns.QueryPatterns;
 
 namespace HttpMocks.Whens
 {
@@ -11,33 +16,56 @@ namespace HttpMocks.Whens
         private HttpResponseMockBuilder httpResponseMockBuilder;
         private readonly HttpRequestMock httpRequestMock;
 
-        public HttpRequestMockBuilder(string method, string pathPattern)
+        internal HttpRequestMockBuilder()
         {
-            httpRequestMock = new HttpRequestMock(method, pathPattern);
+            httpRequestMock = new HttpRequestMock
+            {
+                Method = MethodPattern.Any(),
+                Path = PathPattern.Any(),
+                Query = QueryPattern.Any(),
+                Content = ContentPattern.Any(),
+                Headers = HeadersPattern.Any()
+            };
             httpResponseMockBuilder = new HttpResponseMockBuilder(200);
         }
 
-        public IHttpRequestMock Content(byte[] contentBytes, string contentType = null)
+        public IHttpRequestMock Content(IHttpRequestContentPattern httpRequestContentPattern)
         {
-            if (contentBytes == null) throw new ArgumentNullException(nameof(contentBytes));
+            if (httpRequestContentPattern == null) throw new ArgumentNullException(nameof(httpRequestContentPattern));
 
-            httpRequestMock.ContentPattern = ContentPatterns.Binary(contentBytes, contentType);
+            httpRequestMock.Content = httpRequestContentPattern;
             return this;
         }
 
-        public IHttpRequestMock Content(IHttpRequestMockContentPattern httpRequestMockContentPattern)
+        public IHttpRequestMock Method(IHttpRequestMethodPattern httpRequestMethodPattern)
         {
-            if (httpRequestMockContentPattern == null) throw new ArgumentNullException(nameof(httpRequestMockContentPattern));
+            if (httpRequestMethodPattern == null) throw new ArgumentNullException(nameof(httpRequestMethodPattern));
 
-            httpRequestMock.ContentPattern = httpRequestMockContentPattern;
+            httpRequestMock.Method = httpRequestMethodPattern;
             return this;
         }
 
-        public IHttpRequestMock Header(string headerName, string headerValue)
+        public IHttpRequestMock Headers(IHttpRequestHeadersPattern httpRequestHeadersPattern)
         {
-            if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(nameof(headerName));
+            if (httpRequestHeadersPattern == null) throw new ArgumentNullException(nameof(httpRequestHeadersPattern));
 
-            httpRequestMock.Headers[headerName] = headerValue;
+            httpRequestMock.Headers = httpRequestHeadersPattern;
+            return this;
+        }
+
+        public IHttpRequestMock Path(IHttpRequestPathPattern httpRequestPathPattern)
+        {
+            if (httpRequestPathPattern == null) throw new ArgumentNullException(nameof(httpRequestPathPattern));
+
+            httpRequestMock.Path = httpRequestPathPattern;
+            return this;
+        }
+
+        public IHttpRequestMock Query(IHttpRequestQueryPattern httpRequestQueryPattern)
+        {
+            if (httpRequestQueryPattern == null) throw new ArgumentNullException(nameof(httpRequestQueryPattern));
+
+            httpRequestMock.Query = httpRequestQueryPattern;
             return this;
         }
 

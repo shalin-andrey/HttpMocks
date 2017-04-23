@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HttpMocks.Whens.RequestPatterns;
 
 namespace HttpMocks.Implementation
 {
@@ -30,7 +31,7 @@ namespace HttpMocks.Implementation
         private IEnumerable<HttpRequestMockHandlingInfo> GetRequestMockHandlingInfos(IEnumerable<HttpRequestMock> requestMocks)
         {
             return requestMocks
-                .Select(r => new HttpRequestMockHandlingInfo(new HttpRequestPattern(r.MethodPattern, r.PathPattern, r.ContentPattern), r.Response))
+                .Select(r => new HttpRequestMockHandlingInfo(new HttpRequestPattern(r), r.Response))
                 .ToArray();
         }
     }

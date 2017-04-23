@@ -55,30 +55,47 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Implementation\HandlingMockQueue.cs" />
     <Compile Include="Implementation\HttpMockPortGenerator.cs" />
-    <Compile Include="Implementation\HttpPathPattern.cs" />
     <Compile Include="Implementation\HttpRequestInfo.cs" />
     <Compile Include="Implementation\HttpRequestMock.cs" />
     <Compile Include="Implementation\HttpRequestMockHandlingInfo.cs" />
-    <Compile Include="Implementation\HttpRequestPattern.cs" />
     <Compile Include="Implementation\HttpResponseInfo.cs" />
     <Compile Include="Implementation\StartedHttpMock.cs" />
     <Compile Include="Thens\HttpResponseMock.cs" />
     <Compile Include="Thens\ICustomHttpResponseMock.cs" />
     <Compile Include="Thens\IHttpResponseMockBuilder.cs" />
-    <Compile Include="Whens\HttpRequestMockContentPatterns\AnyContentPattern.cs" />
-    <Compile Include="Whens\HttpRequestMockContentPatterns\Base64ContentPattern.cs" />
-    <Compile Include="Whens\HttpRequestMockContentPatterns\BinaryContentPattern.cs" />
-    <Compile Include="Whens\HttpRequestMockContentPatterns\ContentPatterns.cs" />
-    <Compile Include="Whens\HttpRequestMockContentPatterns\ContentPatternBase.cs" />
+    <Compile Include="Whens\Extensions\HttpRequestMockExtensions.cs" />
     <Compile Include="Whens\HttpRequestMockBuilder.cs" />
-    <Compile Include="Whens\IHttpRequestMock.cs" />
     <Compile Include="Verifications\VerificationResult.cs" />
     <Compile Include="Thens\HttpResponseMockBuilder.cs" />
     <Compile Include="Thens\HttpResponseMockContent.cs" />
     <Compile Include="Thens\IHttpResponseMock.cs" />
+    <Compile Include="Whens\IHttpRequestMock.cs" />
     <Compile Include="Whens\IHttpRequestMockBuilder.cs" />
-    <Compile Include="Whens\IHttpRequestMockContentPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\ContentPatterns\AnyContentPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\ContentPatterns\Base64ContentPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\ContentPatterns\BinaryContentPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\ContentPatterns\ContentPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\ContentPatterns\ContentPatternBase.cs" />
+    <Compile Include="Whens\RequestPatterns\HeadersPatterns\AnyHeadersPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\HeadersPatterns\HeadersPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\HeadersPatterns\SimpleHeadersPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\HttpRequestPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\IHttpRequestHeadersPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\IHttpRequestQueryPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\MethodPatterns\AnyMethodPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\MethodPatterns\MethodPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\MethodPatterns\StandartMethodPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\PathPatterns\AnyPathPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\PathPatterns\PathPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\PathPatterns\SmartPathPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\IHttpRequestContentPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\IHttpRequestMethodPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\IHttpRequestPathPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\QueryPatterns\AnyQueryPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\QueryPatterns\QueryPattern.cs" />
+    <Compile Include="Whens\RequestPatterns\QueryPatterns\SimpleQueryPattern.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
+using HttpMocks.Whens.Extensions;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Integrational
@@ -23,7 +26,7 @@ namespace HttpMocks.Tests.Integrational
         }
 
         [Test]
-        public void TestSuccessThenGetReturn302()
+        public void TestSuccessWhenGetReturn302()
         {
             var httpMock = httpMocks.New("localhost");
             httpMock
@@ -37,7 +40,56 @@ namespace HttpMocks.Tests.Integrational
             response.StatusCode.ShouldBeEquivalentTo(302);
             response.ContentBytes.Length.ShouldBeEquivalentTo(0);
 
-            httpMocks.Invoking(m => m.VerifyAll());
+            httpMocks.VerifyAll();
+        }
+
+        [Test]
+        public void TestSuccessWhenHeadersDefined()
+        {
+            var headers = new NameValueCollection {{"X-Header-Name", "Header_Value"}};
+            var httpMock = httpMocks.New("localhost");
+            httpMock
+                .WhenRequestGet("/")
+                .Headers(headers)
+                .ThenResponse(200);
+            httpMock.Run();
+
+            var url = BuildUrl(httpMock, "/");
+            var responseA = Send(url, "GET");
+
+            responseA.StatusCode.ShouldBeEquivalentTo(500);
+
+            var responseB = Send(url, "GET", headers);
+
+            responseB.StatusCode.ShouldBeEquivalentTo(200);
+
+            httpMocks.Invoking(m => m.VerifyAll())
+                .ShouldThrowExactly<AssertHttpMockException>()
+                .WithMessage("Actual request GET /, but not expected.");
+        }
+
+        [Test]
+        public void TestSuccessWhenQueryDefined()
+        {
+            var query = new NameValueCollection {{"qp", "qv"}};
+            var httpMock = httpMocks.New("localhost");
+            httpMock
+                .WhenRequestGet("/")
+                .Query(query)
+                .ThenResponse(200);
+            httpMock.Run();
+
+            var responseA = Send(BuildUrl(httpMock, "/"), "GET");
+
+            responseA.StatusCode.ShouldBeEquivalentTo(500);
+
+            var responseB = Send(BuildUrl(httpMock, "/", query), "GET");
+
+            responseB.StatusCode.ShouldBeEquivalentTo(200);
+
+            httpMocks.Invoking(m => m.VerifyAll())
+                .ShouldThrowExactly<AssertHttpMockException>()
+                .WithMessage("Actual request GET /, but not expected.");
         }
 
         [Test]
@@ -97,7 +149,7 @@ namespace HttpMocks.Tests.Integrational
 
             Send(url, "GET").StatusCode.ShouldBeEquivalentTo(200);
 
-            httpMocks.Invoking(m => m.VerifyAll());
+            httpMocks.VerifyAll();
         }
 
         [Test]
@@ -116,7 +168,7 @@ namespace HttpMocks.Tests.Integrational
             var url = BuildUrl(httpMock, "/bills");
             var response = Send(url, "GET");
 
-            httpMocks.Invoking(m => m.VerifyAll());
+            httpMocks.VerifyAll();
 
             response.StatusCode.ShouldBeEquivalentTo(200);
             response.ContentBytes.Length.ShouldBeEquivalentTo(content.Length);
@@ -138,7 +190,9 @@ namespace HttpMocks.Tests.Integrational
             response.StatusCode.ShouldBeEquivalentTo(500);
             response.ContentBytes.Length.ShouldBeEquivalentTo(0);
 
-            httpMocks.Invoking(m => m.VerifyAll()).ShouldThrowExactly<AssertHttpMockException>();
+            httpMocks
+                .Invoking(m => m.VerifyAll())
+                .ShouldThrowExactly<AssertHttpMockException>();
         }
 
         [Test]
@@ -195,17 +249,32 @@ namespace HttpMocks.Tests.Integrational
             return Task.FromResult(HttpResponseInfo.Create(200));
         }
 
-        private static Uri BuildUrl(IHttpMock httpMock, string path)
+        private static Uri BuildUrl(IHttpMock httpMock, string path, NameValueCollection query = null)
         {
-            return new UriBuilder(httpMock.MockUri.Scheme, httpMock.MockUri.Host, httpMock.MockUri.Port, path).Uri;
+            var uriBuilder = new UriBuilder(httpMock.MockUri.Scheme, httpMock.MockUri.Host, httpMock.MockUri.Port, path);
+
+            if (query != null)
+            {
+                uriBuilder.Query = string.Join("&", query.AllKeys.Select(x => $"{x}={query[x]}"));
+            }
+
+            return uriBuilder.Uri;
         }
 
-        private static TestResponse Send(Uri url, string method)
+        private static TestResponse Send(Uri url, string method, NameValueCollection headers = null)
         {
             try
             {
                 var request = WebRequest.Create(url);
                 request.Method = method;
+
+                if (headers != null)
+                {
+                    foreach (var headerName in headers.AllKeys)
+                    {
+                        request.Headers.Add(headerName, headers[headerName]);
+                    }
+                }
 
                 request.Timeout = 2000;
 

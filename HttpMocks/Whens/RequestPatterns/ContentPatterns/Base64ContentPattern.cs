@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Text;
 
-namespace HttpMocks.Whens.HttpRequestMockContentPatterns
+namespace HttpMocks.Whens.RequestPatterns.ContentPatterns
 {
-    public class Base64ContentPattern : ContentPatternBase<string>
+    public sealed class Base64ContentPattern : ContentPatternBase<string>
     {
         internal static Base64ContentPattern Create(string base64StringPattern, string contentTypePattern = null)
         {

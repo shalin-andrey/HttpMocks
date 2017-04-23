@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace HttpMocks.Whens.HttpRequestMockContentPatterns
+namespace HttpMocks.Whens.RequestPatterns.ContentPatterns
 {
-    public static class ContentPatterns
+    public static class ContentPattern
     {
         public static Base64ContentPattern Base64(string base64StringPattern, string contentTypePattern = null)
         {

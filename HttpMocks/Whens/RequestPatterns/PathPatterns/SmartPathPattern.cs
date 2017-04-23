@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace HttpMocks.Implementation
+namespace HttpMocks.Whens.RequestPatterns.PathPatterns
 {
-    public class HttpPathPattern
+    public sealed class SmartPathPattern : IHttpRequestPathPattern
     {
         private readonly Regex regex;
         private readonly Dictionary<string, string> rxPatterns = new Dictionary<string, string>
@@ -14,12 +14,12 @@ namespace HttpMocks.Implementation
             {"@str", ".+"}
         };
 
-        public HttpPathPattern(string pattern)
+        public SmartPathPattern(string pattern)
         {
             regex = BuildRegex(Normalize(pattern));
         }
 
-        public bool IsMatch(string value)
+        bool IHttpRequestPathPattern.IsMatch(string value)
         {
             if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));
 

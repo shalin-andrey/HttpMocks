@@ -1,6 +1,11 @@
 ﻿using FluentAssertions;
 using HttpMocks.Implementation;
 using HttpMocks.Thens;
+using HttpMocks.Whens.RequestPatterns.ContentPatterns;
+using HttpMocks.Whens.RequestPatterns.HeadersPatterns;
+using HttpMocks.Whens.RequestPatterns.MethodPatterns;
+using HttpMocks.Whens.RequestPatterns.PathPatterns;
+using HttpMocks.Whens.RequestPatterns.QueryPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation
@@ -97,9 +102,17 @@ namespace HttpMocks.Tests.Unit.Implementation
 
         private static HttpRequestMock CreateMock(string method)
         {
-            return new HttpRequestMock(method, "/")
+            return new HttpRequestMock
             {
-                Response = new HttpResponseMock {RepeatCount = 1}
+                Method = MethodPattern.Standart(method),
+                Path = PathPattern.Smart("/"),
+                Query = QueryPattern.Any(),
+                Content = ContentPattern.Any(),
+                Headers = HeadersPattern.Any(),
+                Response = new HttpResponseMock
+                {
+                    RepeatCount = 1
+                }
             };
         }
     }

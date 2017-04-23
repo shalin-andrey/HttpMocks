@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using FluentAssertions;
-using HttpMocks.Whens;
-using HttpMocks.Whens.HttpRequestMockContentPatterns;
+using HttpMocks.Whens.RequestPatterns;
+using HttpMocks.Whens.RequestPatterns.ContentPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation
@@ -11,7 +11,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         [Test]
         public void TestAny()
         {
-            var contentPattern = ContentPatterns.Any();
+            IHttpRequestContentPattern contentPattern = ContentPattern.Any();
             contentPattern.IsMatch(GenBytes(), GenString()).ShouldBeEquivalentTo(true);
         }
 
@@ -21,8 +21,8 @@ namespace HttpMocks.Tests.Unit.Implementation
             var contentBytes = GenBytes();
             var contentType = GenString();
 
-            Check(ContentPatterns.Binary(contentBytes, contentType), contentBytes, contentType);
-            CheckWithoutContentType(ContentPatterns.Binary(contentBytes), contentBytes, contentType);
+            Check(ContentPattern.Binary(contentBytes, contentType), contentBytes, contentType);
+            CheckWithoutContentType(ContentPattern.Binary(contentBytes), contentBytes, contentType);
         }
 
         [Test]
@@ -33,11 +33,11 @@ namespace HttpMocks.Tests.Unit.Implementation
 
             var rightContentBytes = Encoding.ASCII.GetBytes(contentBase64);
 
-            Check(ContentPatterns.Base64(contentBase64, contentType), rightContentBytes, contentType);
-            CheckWithoutContentType(ContentPatterns.Base64(contentBase64), rightContentBytes, contentType);
+            Check(ContentPattern.Base64(contentBase64, contentType), rightContentBytes, contentType);
+            CheckWithoutContentType(ContentPattern.Base64(contentBase64), rightContentBytes, contentType);
         }
 
-        private void Check(IHttpRequestMockContentPattern contentPattern, byte[] rightContentBytes, string rightContentType)
+        private void Check(IHttpRequestContentPattern contentPattern, byte[] rightContentBytes, string rightContentType)
         {
             contentPattern.IsMatch(rightContentBytes, rightContentType).ShouldBeEquivalentTo(true);
             contentPattern.IsMatch(GenBytes(), rightContentType).ShouldBeEquivalentTo(false);
@@ -45,7 +45,7 @@ namespace HttpMocks.Tests.Unit.Implementation
             contentPattern.IsMatch(GenBytes(), GenString()).ShouldBeEquivalentTo(false);
         }
 
-        private void CheckWithoutContentType(IHttpRequestMockContentPattern contentPattern, byte[] rightContentBytes, string rightContentType)
+        private void CheckWithoutContentType(IHttpRequestContentPattern contentPattern, byte[] rightContentBytes, string rightContentType)
         {
             contentPattern.IsMatch(rightContentBytes, rightContentType).ShouldBeEquivalentTo(true);
             contentPattern.IsMatch(GenBytes(), rightContentType).ShouldBeEquivalentTo(false);

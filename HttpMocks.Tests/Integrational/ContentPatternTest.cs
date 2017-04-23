@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net;
 using FluentAssertions;
-using HttpMocks.Whens.HttpRequestMockContentPatterns;
+using HttpMocks.Whens.RequestPatterns.ContentPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Integrational
@@ -26,7 +26,7 @@ namespace HttpMocks.Tests.Integrational
             var httpMock = httpMocks.New("localhost");
             httpMock
                 .WhenRequestPost("/bills")
-                .Content(ContentPatterns.Binary(postContentBytes))
+                .Content(ContentPattern.Binary(postContentBytes))
                 .ThenResponse(302);
             httpMock.Run();
 

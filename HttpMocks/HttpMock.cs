@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HttpMocks.Whens;
+using HttpMocks.Whens.Extensions;
 
 namespace HttpMocks
 {
@@ -26,16 +27,57 @@ namespace HttpMocks
 
         public IHttpRequestMock WhenRequestGet(string path)
         {
-            var requestMock = new HttpRequestMockBuilder("GET", path);
-            internalHttpRequestMockBuilders.Add(requestMock);
-            return requestMock;
+            return CreateMockBuilder()
+                .Method("GET")
+                .Path(path);
+        }
+
+        public IHttpRequestMock WhenRequestPost()
+        {
+            return WhenRequestPost(string.Empty);
         }
 
         public IHttpRequestMock WhenRequestPost(string path)
         {
-            var requestMock = new HttpRequestMockBuilder("POST", path);
-            internalHttpRequestMockBuilders.Add(requestMock);
-            return requestMock;
+            return CreateMockBuilder()
+                .Method("POST")
+                .Path(path);
+        }
+
+        public IHttpRequestMock WhenRequestPut()
+        {
+            return WhenRequestPut(string.Empty);
+        }
+
+        public IHttpRequestMock WhenRequestPut(string path)
+        {
+            return CreateMockBuilder()
+                .Method("PUT")
+                .Path(path);
+        }
+
+        public IHttpRequestMock WhenRequestDelete()
+        {
+            return WhenRequestDelete(string.Empty);
+        }
+
+        public IHttpRequestMock WhenRequestDelete(string path)
+        {
+            return CreateMockBuilder()
+                .Method("DELETE")
+                .Path(path);
+        }
+
+        public IHttpRequestMock WhenRequestPatch()
+        {
+            return WhenRequestPatch(string.Empty);
+        }
+
+        public IHttpRequestMock WhenRequestPatch(string path)
+        {
+            return CreateMockBuilder()
+                .Method("PATCH")
+                .Path(path);
         }
 
         public void Run()
@@ -47,6 +89,13 @@ namespace HttpMocks
         public void Dispose()
         {
             Run();
+        }
+
+        private HttpRequestMockBuilder CreateMockBuilder()
+        {
+            var requestMockBuilder = new HttpRequestMockBuilder();
+            internalHttpRequestMockBuilders.Add(requestMockBuilder);
+            return requestMockBuilder;
         }
     }
 }
