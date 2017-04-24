@@ -1,4 +1,6 @@
-namespace HttpMocks.Whens.RequestPatterns.PathPatterns
+using HttpMocks.Whens.RequestPatterns.PathPatterns;
+
+namespace HttpMocks.Whens.RequestPatterns
 {
     public static class PathPattern
     {

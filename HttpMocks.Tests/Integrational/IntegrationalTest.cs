@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
-using HttpMocks.Whens.Extensions;
+using HttpMocks.Whens;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Integrational

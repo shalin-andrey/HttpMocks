@@ -1,4 +1,6 @@
-namespace HttpMocks.Whens.RequestPatterns.MethodPatterns
+using HttpMocks.Whens.RequestPatterns.MethodPatterns;
+
+namespace HttpMocks.Whens.RequestPatterns
 {
     public static class MethodPattern
     {
@@ -10,6 +12,11 @@ namespace HttpMocks.Whens.RequestPatterns.MethodPatterns
         public static StandartMethodPattern Standart(string method)
         {
             return new StandartMethodPattern(method);
+        }
+
+        public static StandartMethodPattern Standart(HttpRequestMockMethod method)
+        {
+            return new StandartMethodPattern(method.ToString());
         }
     }
 }

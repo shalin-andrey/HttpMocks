@@ -1,6 +1,7 @@
 ﻿using System;
+using HttpMocks.Whens.RequestPatterns.ContentPatterns;
 
-namespace HttpMocks.Whens.RequestPatterns.ContentPatterns
+namespace HttpMocks.Whens.RequestPatterns
 {
     public static class ContentPattern
     {

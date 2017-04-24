@@ -1,11 +1,7 @@
 ﻿using FluentAssertions;
 using HttpMocks.Implementation;
 using HttpMocks.Thens;
-using HttpMocks.Whens.RequestPatterns.ContentPatterns;
-using HttpMocks.Whens.RequestPatterns.HeadersPatterns;
-using HttpMocks.Whens.RequestPatterns.MethodPatterns;
-using HttpMocks.Whens.RequestPatterns.PathPatterns;
-using HttpMocks.Whens.RequestPatterns.QueryPatterns;
+using HttpMocks.Whens.RequestPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation

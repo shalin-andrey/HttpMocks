@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using HttpMocks.Whens;
-using HttpMocks.Whens.Extensions;
 
 namespace HttpMocks
 {

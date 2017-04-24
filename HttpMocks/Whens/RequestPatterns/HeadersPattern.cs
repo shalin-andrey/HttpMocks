@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
+using HttpMocks.Whens.RequestPatterns.HeadersPatterns;
 
-namespace HttpMocks.Whens.RequestPatterns.HeadersPatterns
+namespace HttpMocks.Whens.RequestPatterns
 {
     public static class HeadersPattern
     {

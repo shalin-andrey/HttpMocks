@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
+using HttpMocks.Whens.RequestPatterns.QueryPatterns;
 
-namespace HttpMocks.Whens.RequestPatterns.QueryPatterns
+namespace HttpMocks.Whens.RequestPatterns
 {
     public static class QueryPattern
     {
