@@ -2,14 +2,10 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("HttpMocks")]
+[assembly: AssemblyTitle("Http Mocks")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HttpMocks")]
-[assembly: AssemblyCopyright("Copyright ©  116")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyProduct("Http Mocks")]
 [assembly: ComVisible(false)]
 [assembly: Guid("B23F1CFC-8E7E-42D7-9648-06DD10E2292A")]
 
