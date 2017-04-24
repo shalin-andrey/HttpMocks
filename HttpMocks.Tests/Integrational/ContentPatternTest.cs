@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using FluentAssertions;
 using HttpMocks.Whens.Extensions;
+using HttpMocks.Whens.RequestPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Integrational

@@ -1,11 +1,7 @@
 ﻿using System.Collections.Specialized;
-using HttpMocks.Whens.RequestPatterns.ContentPatterns;
-using HttpMocks.Whens.RequestPatterns.HeadersPatterns;
-using HttpMocks.Whens.RequestPatterns.MethodPatterns;
-using HttpMocks.Whens.RequestPatterns.PathPatterns;
-using HttpMocks.Whens.RequestPatterns.QueryPatterns;
+using HttpMocks.Whens.RequestPatterns;
 
-namespace HttpMocks.Whens.Extensions
+namespace HttpMocks.Whens
 {
     public static class HttpRequestMockExtensions
     {
@@ -30,6 +26,11 @@ namespace HttpMocks.Whens.Extensions
         }
 
         public static IHttpRequestMock Method(this IHttpRequestMock httpRequestMock, string method)
+        {
+            return httpRequestMock.Method(MethodPattern.Standart(method));
+        }
+
+        public static IHttpRequestMock Method(this IHttpRequestMock httpRequestMock, HttpRequestMockMethod method)
         {
             return httpRequestMock.Method(MethodPattern.Standart(method));
         }

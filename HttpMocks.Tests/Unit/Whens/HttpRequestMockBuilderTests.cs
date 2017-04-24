@@ -3,10 +3,8 @@ using System.Text;
 using FluentAssertions;
 using HttpMocks.Implementation;
 using HttpMocks.Whens;
-using HttpMocks.Whens.Extensions;
+using HttpMocks.Whens.RequestPatterns;
 using HttpMocks.Whens.RequestPatterns.ContentPatterns;
-using HttpMocks.Whens.RequestPatterns.MethodPatterns;
-using HttpMocks.Whens.RequestPatterns.PathPatterns;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation.Whens
