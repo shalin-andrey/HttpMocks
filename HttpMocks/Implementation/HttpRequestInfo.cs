@@ -12,7 +12,8 @@ namespace HttpMocks.Implementation
                 Headers = headers,
                 Query = query,
                 Path = path,
-                ContentBytes = contentBytes
+                ContentBytes = contentBytes,
+                ContentType = contentType
             };
         }
 

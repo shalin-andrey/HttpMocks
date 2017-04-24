@@ -68,6 +68,7 @@
     <Compile Include="Unit\Implementation\HttpMockPortGeneratorTests.cs" />
     <Compile Include="Unit\Implementation\HttpMockRunnerTests.cs" />
     <Compile Include="Unit\Implementation\HttpPathPatternTests.cs" />
+    <Compile Include="Unit\Implementation\HttpRequestInfoTest.cs" />
     <Compile Include="Unit\Implementation\HttpRequestPatternTests.cs" />
     <Compile Include="Unit\Thens\HttpResponseMockBuilderTests.cs" />
     <Compile Include="Unit\Implementation\UnitTest.cs" />

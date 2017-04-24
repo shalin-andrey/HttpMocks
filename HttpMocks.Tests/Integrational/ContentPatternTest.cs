@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net;
 using FluentAssertions;
-using HttpMocks.Whens.RequestPatterns.ContentPatterns;
+using HttpMocks.Whens.Extensions;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Integrational
@@ -24,14 +24,15 @@ namespace HttpMocks.Tests.Integrational
             var postContentBytes = new byte[100];
 
             var httpMock = httpMocks.New("localhost");
+            const string contentType = "application/text";
             httpMock
                 .WhenRequestPost("/bills")
-                .Content(ContentPattern.Binary(postContentBytes))
+                .Content(postContentBytes, contentType)
                 .ThenResponse(302);
             httpMock.Run();
 
             var url = BuildUrl(httpMock, "/bills");
-            var response = Send(url, "POST", postContentBytes);
+            var response = Send(url, "POST", postContentBytes, contentType);
 
             response.StatusCode.ShouldBeEquivalentTo(302);
             response.ContentBytes.Length.ShouldBeEquivalentTo(0);
@@ -44,7 +45,7 @@ namespace HttpMocks.Tests.Integrational
             return new UriBuilder(httpMock.MockUri.Scheme, httpMock.MockUri.Host, httpMock.MockUri.Port, path).Uri;
         }
 
-        private static TestResponse Send(Uri url, string method, byte[] contentBytes)
+        private static TestResponse Send(Uri url, string method, byte[] contentBytes, string contentType)
         {
             try
             {
@@ -52,9 +53,13 @@ namespace HttpMocks.Tests.Integrational
                 request.Method = method;
                 request.Timeout = 2000;
 
-                using (var stream = request.GetRequestStream())
+                if (contentBytes.Length > 0)
                 {
-                    stream.Write(contentBytes, 0, contentBytes.Length);
+                    using (var stream = request.GetRequestStream())
+                    {
+                        stream.Write(contentBytes, 0, contentBytes.Length);
+                    }
+                    request.ContentType = contentType;
                 }
 
                 var httpWebResponse = (HttpWebResponse)request.GetResponse();
