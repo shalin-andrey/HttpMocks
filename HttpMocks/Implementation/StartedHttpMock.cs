@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using HttpMocks.Verifications;
@@ -27,7 +28,14 @@ namespace HttpMocks.Implementation
         public void Start()
         {
             stated = true;
-            httpListener.Start();
+            try
+            {
+                httpListener.Start();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Can't start http listener with prefix {string.Join(";", httpListener.Prefixes)}.", exception);
+            }
             listenHttpMockTask = StartAsync();
         }
 

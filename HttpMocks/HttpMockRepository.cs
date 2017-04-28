@@ -5,7 +5,7 @@ namespace HttpMocks
 {
     public class HttpMockRepository
     {
-        private static readonly HttpMockPortGenerator portGenerator = new HttpMockPortGenerator();
+        private static readonly HttpMockPortGenerator portGenerator = new HttpMockPortGenerator(new UnavailablePortsProvider());
         private readonly IHttpMockRunner httpMockRunner;
 
         public HttpMockRepository()

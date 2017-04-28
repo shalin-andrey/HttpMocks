@@ -2,17 +2,27 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using HttpMocks.Implementation;
+using Moq;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation
 {
     [TestFixture]
-    public class HttpMockPortGeneratorTests
+    public class HttpMockPortGeneratorTests : UnitTest
     {
+        private Mock<IUnavailablePortsProvider> unanavailablePortsProvider;
+
+        [SetUp]
+        public void SetUp()
+        {
+            unanavailablePortsProvider = NewMock<IUnavailablePortsProvider>();
+            unanavailablePortsProvider.Setup(x => x.GetUnavailablePorts()).Returns(new int[0]);
+        }
+
         [Test]
         public void TestSuccessGenerate()
         {
-            var httpMockPortGenerator = new HttpMockPortGenerator();
+            var httpMockPortGenerator = new HttpMockPortGenerator(unanavailablePortsProvider.Object);
             var hashSet = new HashSet<int>();
             for (var i = 0; i < 10000; i++)
             {
@@ -25,7 +35,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         [Test]
         public void TestSuccessGenerateWhenOnePort()
         {
-            var httpMockPortGenerator = new HttpMockPortGenerator(1, 1);
+            var httpMockPortGenerator = new HttpMockPortGenerator(unanavailablePortsProvider.Object, 1, 1);
             var expectedPort = httpMockPortGenerator.GeneratePort();
             expectedPort.ShouldBeEquivalentTo(1);
         }
@@ -33,7 +43,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         [Test]
         public void TestFailGenerateWhenOnePort()
         {
-            var httpMockPortGenerator = new HttpMockPortGenerator(1, 1);
+            var httpMockPortGenerator = new HttpMockPortGenerator(unanavailablePortsProvider.Object, 1, 1);
             var expectedPort = httpMockPortGenerator.GeneratePort();
             expectedPort.ShouldBeEquivalentTo(1);
 

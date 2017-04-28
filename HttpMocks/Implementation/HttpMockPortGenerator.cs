@@ -13,16 +13,11 @@ namespace HttpMocks.Implementation
         private readonly HashSet<int> actualPorts;
         private readonly Random random;
 
-        public HttpMockPortGenerator()
-            : this(defaultMinPortValue, defaultMaxPortValue)
-        {
-        }
-
-        internal HttpMockPortGenerator(int minPortValue, int maxPortValue)
+        internal HttpMockPortGenerator(IUnavailablePortsProvider unavailablePortsProvider, int minPortValue = defaultMinPortValue, int maxPortValue = defaultMaxPortValue)
         {
             this.minPortValue = minPortValue;
             this.maxPortValue = maxPortValue;
-            actualPorts = new HashSet<int>();
+            actualPorts = new HashSet<int>(unavailablePortsProvider.GetUnavailablePorts());
             random = new Random(DateTime.Now.Millisecond);
         }
 
