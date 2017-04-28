@@ -13,7 +13,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         private Mock<IUnavailablePortsProvider> unanavailablePortsProvider;
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
             unanavailablePortsProvider = NewMock<IUnavailablePortsProvider>();
             unanavailablePortsProvider.Setup(x => x.GetUnavailablePorts()).Returns(new int[0]);
