@@ -1,15 +1,20 @@
 ﻿using System;
+using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
+using HttpMocks.Implementation.Core;
 
 namespace HttpMocks
 {
     public class HttpMockRepository
     {
-        private static readonly HttpMockPortGenerator portGenerator = new HttpMockPortGenerator(new UnavailablePortsProvider());
+        private static readonly UnavailablePortsProvider unavailablePortsProvider = new UnavailablePortsProvider();
+        private static readonly HttpMockPortGenerator portGenerator = new HttpMockPortGenerator(unavailablePortsProvider);
+        private static readonly StartedHttpMockFactory startedHttpMockFactory = new StartedHttpMockFactory(new HttpMocksExceptionFactory(unavailablePortsProvider), new HttpListenerWrapperFactory());
+
         private readonly IHttpMockRunner httpMockRunner;
 
         public HttpMockRepository()
-            : this(new HttpMockRunner(new HandlingMockQueueFactory(), new StartedHttpMockFactory()))
+            : this(new HttpMockRunner(new HandlingMockQueueFactory(), startedHttpMockFactory))
         {
         }
 

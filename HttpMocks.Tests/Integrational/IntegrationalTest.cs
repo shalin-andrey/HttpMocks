@@ -28,11 +28,13 @@ namespace HttpMocks.Tests.Integrational
         [Test]
         public void TestSuccessWhenGetReturn302()
         {
-            var httpMock = httpMocks.New("localhost");
-            httpMock
-                .WhenRequestGet("/bills")
-                .ThenResponse(302);
-            httpMock.Run();
+            IHttpMock httpMock;
+            using (httpMock = httpMocks.New("localhost"))
+            {
+                httpMock
+                    .WhenRequestGet("/bills")
+                    .ThenResponse(302);
+            }
 
             var url = BuildUrl(httpMock, "/bills");
             var response = Send(url, "GET");

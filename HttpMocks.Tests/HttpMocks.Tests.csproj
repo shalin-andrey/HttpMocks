@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Integrational\ContentPatternTest.cs" />
     <Compile Include="Integrational\IntegrationalTest.cs" />
+    <Compile Include="Integrational\MoreThatOneMockTest.cs" />
     <Compile Include="Integrational\TestResponse.cs" />
     <Compile Include="Integrational\UnavailablePortsProviderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Unit\Implementation\HttpPathPatternTests.cs" />
     <Compile Include="Unit\Implementation\HttpRequestInfoTest.cs" />
     <Compile Include="Unit\Implementation\HttpRequestPatternTests.cs" />
+    <Compile Include="Unit\Implementation\StartedHttpMockTest.cs" />
     <Compile Include="Unit\Thens\HttpResponseMockBuilderTests.cs" />
     <Compile Include="Unit\Implementation\UnitTest.cs" />
     <Compile Include="Unit\Whens\HttpRequestMockBuilderTests.cs" />

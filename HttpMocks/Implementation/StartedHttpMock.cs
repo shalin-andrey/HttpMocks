@@ -1,27 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
+using HttpMocks.Exceptions;
+using HttpMocks.Implementation.Core;
 using HttpMocks.Verifications;
 
 namespace HttpMocks.Implementation
 {
     internal class StartedHttpMock : IStartedHttpMock
     {
-        private readonly HttpListener httpListener;
+        private readonly IHttpListenerWrapper httpListenerWrapper;
         private readonly IHandlingMockQueue handlingMockQueue;
+        private readonly IHttpMocksExceptionFactory httpMocksExceptionFactory;
         private readonly List<VerificationResult> verificationMockResults;
         private bool stated;
         private Task listenHttpMockTask;
 
-        public StartedHttpMock(Uri mockUrl, IHandlingMockQueue handlingMockQueue)
+        public StartedHttpMock(IHttpListenerWrapper httpListenerWrapper, IHandlingMockQueue handlingMockQueue, IHttpMocksExceptionFactory httpMocksExceptionFactory)
         {
+            this.httpListenerWrapper = httpListenerWrapper;
             this.handlingMockQueue = handlingMockQueue;
-            httpListener = new HttpListener();
-            httpListener.Prefixes.Add(mockUrl.ToString());
+            this.httpMocksExceptionFactory = httpMocksExceptionFactory;
             verificationMockResults = new List<VerificationResult>();
         }
 
@@ -30,11 +30,11 @@ namespace HttpMocks.Implementation
             stated = true;
             try
             {
-                httpListener.Start();
+                httpListenerWrapper.Start();
             }
             catch (Exception exception)
             {
-                throw new Exception($"Can't start http listener with prefix {string.Join(";", httpListener.Prefixes)}.", exception);
+                throw httpMocksExceptionFactory.CreateWithDiagnostic(httpListenerWrapper.Prefix, "Can't start http listener", exception);
             }
             listenHttpMockTask = StartAsync();
         }
@@ -42,7 +42,7 @@ namespace HttpMocks.Implementation
         public Task<VerificationResult[]> StopAsync()
         {
             stated = false;
-            httpListener.Stop();
+            httpListenerWrapper.Stop();
             return listenHttpMockTask.ContinueWith((task, state) => verificationMockResults.ToArray(), null);
         }
 
@@ -50,37 +50,29 @@ namespace HttpMocks.Implementation
         {
             while (stated)
             {
-                var context = await SafeGetContextAsync().ConfigureAwait(false);
-                if (context == null)
+                var context = await httpListenerWrapper.GetContextAsync().ConfigureAwait(false);
+                if (context.IsInvalid)
                 {
                     return;
                 }
 
                 try
                 {
-                    context.Response.SendChunked = false;
+                    var request = await context.ReadRequestAsync().ConfigureAwait(false);
 
-                    var requestContentBytes = await ReadInputStreamAsync(context.Request.ContentLength64, context.Request.InputStream).ConfigureAwait(false);
-                    var httpRequestInfo = HttpRequestInfo.Create(context.Request.HttpMethod,
-                        context.Request.Url.LocalPath, context.Request.QueryString,
-                        context.Request.Headers, 
-                        requestContentBytes,
-                        context.Request.ContentType);
+                    LogHttpRequestInfo(request);
 
-                    LogHttpRequestInfo(httpRequestInfo);
-                    var httpResponseInfo = await ProcessRequestAsync(httpRequestInfo).ConfigureAwait(false);
-                    LogHttpResponseInfo(httpResponseInfo);
-                    await WriteResponseAsync(context, httpResponseInfo).ConfigureAwait(false);
+                    var response = await ProcessRequestAsync(request).ConfigureAwait(false);
+
+                    LogHttpResponseInfo(response);
+
+                    await context.WriteResponseAsync(response).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
                     var verificationResult = VerificationResult.Create($"Unhandled exception: {e}");
                     verificationMockResults.Add(verificationResult);
-                    context.Response.StatusCode = 500;
-                }
-                finally
-                {
-                    context.Response.Close();
+                    await context.WriteResponseAsync(HttpResponseInfo.Create(500)).ConfigureAwait(false);
                 }
             }
         }
@@ -121,44 +113,14 @@ namespace HttpMocks.Implementation
             return string.Join("&", parameterAndValuePairs);
         }
 
-        private async Task<HttpListenerContext> SafeGetContextAsync()
+        private async Task<HttpResponseInfo> ProcessRequestAsync(HttpRequestInfo request)
         {
-            try
-            {
-                return await httpListener.GetContextAsync().ConfigureAwait(false);
-            }
-            catch (ObjectDisposedException)
-            {
-                return null;
-            }
-        }
-
-        private static async Task WriteResponseAsync(HttpListenerContext context, HttpResponseInfo httpResponseInfo)
-        {
-            context.Response.StatusCode = httpResponseInfo.StatusCode;
-            foreach (string headerName in httpResponseInfo.Headers.Keys)
-            {
-                var headerValue = httpResponseInfo.Headers[headerName];
-                context.Response.AddHeader(headerName, headerValue);
-            }
-            var contentBytesLength = httpResponseInfo.ContentBytes.Length;
-            if (contentBytesLength > 0)
-            {
-                context.Response.ContentType = httpResponseInfo.ContentType;
-                context.Response.ContentLength64 = httpResponseInfo.ContentBytes.Length;
-                await context.Response.OutputStream.WriteAsync(httpResponseInfo.ContentBytes, 0, contentBytesLength).ConfigureAwait(false);
-                await context.Response.OutputStream.FlushAsync().ConfigureAwait(false);
-            }
-        }
-
-        private async Task<HttpResponseInfo> ProcessRequestAsync(HttpRequestInfo httpRequestInfo)
-        {
-            var handlingInfo = handlingMockQueue.Dequeue(httpRequestInfo);
+            var handlingInfo = handlingMockQueue.Dequeue(request);
 
             if (handlingInfo == null)
             {
                 var verificationResult = VerificationResult.Create(
-                    $"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path}, but not expected.");
+                    $"Actual request {request.Method} {request.Path}, but not expected.");
                 verificationMockResults.Add(verificationResult);
                 return HttpResponseInfo.Create(500);
             }
@@ -166,7 +128,7 @@ namespace HttpMocks.Implementation
             if (!handlingInfo.IsUsageCountValid())
             {
                 var verificationResult = VerificationResult.Create(
-                    $"Actual request {httpRequestInfo.Method} {httpRequestInfo.Path} repeat" +
+                    $"Actual request {request.Method} {request.Path} repeat" +
                     $" count {handlingInfo.UsageCount}, but max expected repeat count {handlingInfo.ResponseMock.RepeatCount}.");
                 verificationMockResults.Add(verificationResult);
                 return HttpResponseInfo.Create(500);
@@ -176,18 +138,20 @@ namespace HttpMocks.Implementation
 
             if (httpResponseMock.ResponseInfoBuilder != null)
             {
-                return await SafeInvokeResponseInfoBuilderAsync(httpResponseMock.ResponseInfoBuilder, httpRequestInfo).ConfigureAwait(false);
+                return await SafeInvokeResponseInfoBuilderAsync(httpResponseMock.ResponseInfoBuilder, request).ConfigureAwait(false);
             }
 
-            return HttpResponseInfo.Create(httpResponseMock.StatusCode, httpResponseMock.Content.Bytes,
-                httpResponseMock.Content.Type, httpResponseMock.Headers);
+            return HttpResponseInfo.Create(httpResponseMock.StatusCode,
+                httpResponseMock.Content.Bytes,
+                httpResponseMock.Content.Type,
+                httpResponseMock.Headers);
         }
 
-        private async Task<HttpResponseInfo> SafeInvokeResponseInfoBuilderAsync(Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder, HttpRequestInfo httpRequestInfo)
+        private async Task<HttpResponseInfo> SafeInvokeResponseInfoBuilderAsync(Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder, HttpRequestInfo request)
         {
             try
             {
-                return await asyncResponseInfoBuilder(httpRequestInfo).ConfigureAwait(false);
+                return await asyncResponseInfoBuilder(request).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -195,22 +159,6 @@ namespace HttpMocks.Implementation
                 verificationMockResults.Add(verificationResult);
                 return HttpResponseInfo.Create(500);
             }
-        }
-
-        private static async Task<byte[]> ReadInputStreamAsync(long contentLength, Stream stream)
-        {
-            var buffer = new byte[contentLength];
-            var offset = 0;
-            while (offset < contentLength)
-            {
-                var currentNeedReadLength = contentLength - offset > buffer.Length
-                    ? buffer.Length
-                    : contentLength - offset;
-
-                var currentReadedCount = await stream.ReadAsync(buffer, offset, (int)currentNeedReadLength).ConfigureAwait(false);
-                offset += currentReadedCount;
-            }
-            return buffer;
         }
     }
 }
