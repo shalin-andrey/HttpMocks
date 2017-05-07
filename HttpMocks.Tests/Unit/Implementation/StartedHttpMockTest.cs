@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
 using HttpMocks.Implementation.Core;
 using Moq;

@@ -10,7 +10,7 @@
             Type = type;
         }
 
-        public byte[] Bytes { get; private set; }
-        public string Type { get; private set; }
+        public byte[] Bytes { get; }
+        public string Type { get; }
     }
 }
