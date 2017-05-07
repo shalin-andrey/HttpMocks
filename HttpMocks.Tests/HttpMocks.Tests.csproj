@@ -59,8 +59,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Integrational\ContentPatternTest.cs" />
-    <Compile Include="Integrational\IntegrationalTest.cs" />
+    <Compile Include="Integrational\ContentPatternTests.cs" />
+    <Compile Include="Integrational\IntegrationalTestsBase.cs" />
+    <Compile Include="Integrational\MethodAndPathTests.cs" />
     <Compile Include="Integrational\MoreThatOneMockTest.cs" />
     <Compile Include="Integrational\TestResponse.cs" />
     <Compile Include="Integrational\UnavailablePortsProviderTest.cs" />

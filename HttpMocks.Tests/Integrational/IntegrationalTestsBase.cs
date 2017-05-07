@@ -1,66 +1,70 @@
-﻿using System;
+using System;
+using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
-using FluentAssertions;
-using HttpMocks.Whens;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Integrational
 {
-    [TestFixture]
-    public class ContentPatternTest
+    public class IntegrationalTestsBase
     {
-        private HttpMockRepository httpMocks;
+        protected HttpMockRepository HttpMocks;
 
         [SetUp]
         public void SetUp()
         {
-            httpMocks = new HttpMockRepository();
+            HttpMocks = new HttpMockRepository();
         }
 
-        [Test]
-        public void TestSuccessThenGetReturn302()
+        [TearDown]
+        public virtual void TearDown()
         {
-            var postContentBytes = new byte[100];
-
-            var httpMock = httpMocks.New("localhost");
-            const string contentType = "application/text";
-            httpMock
-                .WhenRequestPost("/bills")
-                .Content(postContentBytes, contentType)
-                .ThenResponse(302);
-            httpMock.Run();
-
-            var url = BuildUrl(httpMock, "/bills");
-            var response = Send(url, "POST", postContentBytes, contentType);
-
-            response.StatusCode.ShouldBeEquivalentTo(302);
-            response.ContentBytes.Length.ShouldBeEquivalentTo(0);
-
-            httpMocks.Invoking(m => m.VerifyAll());
+            HttpMocks.VerifyAll();
         }
 
-        private static Uri BuildUrl(IHttpMock httpMock, string path)
+        protected readonly Uri DefaultMockUrl = new Uri("http://localhost:3465/");
+
+        protected static Uri BuildUrl(Uri mockUrl, string path, NameValueCollection query = null)
         {
-            return new UriBuilder(httpMock.MockUri.Scheme, httpMock.MockUri.Host, httpMock.MockUri.Port, path).Uri;
+            var uriBuilder = new UriBuilder(mockUrl.Scheme, mockUrl.Host, mockUrl.Port, path);
+
+            if (query != null)
+            {
+                uriBuilder.Query = string.Join("&", query.AllKeys.Select(x => $"{x}={query[(string) x]}"));
+            }
+
+            return uriBuilder.Uri;
         }
 
-        private static TestResponse Send(Uri url, string method, byte[] contentBytes, string contentType)
+        protected static TestResponse Send(Uri url, string method, byte[] contentBytes = null, string contentType = null, NameValueCollection headers = null)
         {
             try
             {
                 var request = WebRequest.Create(url);
                 request.Method = method;
-                request.Timeout = 2000;
 
-                if (contentBytes.Length > 0)
+                if (headers != null)
+                {
+                    foreach (var headerName in headers.AllKeys)
+                    {
+                        request.Headers.Add(headerName, headers[headerName]);
+                    }
+                }
+
+                if (contentBytes != null && contentBytes.Length > 0)
                 {
                     using (var stream = request.GetRequestStream())
                     {
                         stream.Write(contentBytes, 0, contentBytes.Length);
                     }
-                    request.ContentType = contentType;
+                    if (contentType != null)
+                    {
+                        request.ContentType = contentType;
+                    }
                 }
+
+                request.Timeout = 2000;
 
                 var httpWebResponse = (HttpWebResponse)request.GetResponse();
                 return Convert(httpWebResponse);
