@@ -8,9 +8,17 @@ namespace HttpMocks.Implementation
     {
         private readonly List<HttpRequestMockHandlingInfo> handlingInfos;
 
-        public HandlingMockQueue(IEnumerable<HttpRequestMock> httpRequestMocks)
+        public HandlingMockQueue()
         {
-            handlingInfos = new List<HttpRequestMockHandlingInfo>(GetRequestMockHandlingInfos(httpRequestMocks));
+            handlingInfos = new List<HttpRequestMockHandlingInfo>();
+        }
+
+        public void Enqueue(HttpRequestMock[] httpRequestMocks)
+        {
+            lock (handlingInfos)
+            {
+                handlingInfos.AddRange(GetRequestMockHandlingInfos(httpRequestMocks));
+            }
         }
 
         public HttpRequestMockHandlingInfo Dequeue(HttpRequestInfo httpRequestInfo)

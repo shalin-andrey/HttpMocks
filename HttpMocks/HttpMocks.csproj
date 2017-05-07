@@ -52,10 +52,9 @@
     <Compile Include="Implementation\Core\HttpListenerWrapperFactory.cs" />
     <Compile Include="Implementation\Core\IHttpListenerWrapper.cs" />
     <Compile Include="Implementation\Core\IHttpListenerWrapperFactory.cs" />
-    <Compile Include="Implementation\HandlingMockQueueFactory.cs" />
     <Compile Include="Implementation\HttpResponseInfoBuilder.cs" />
     <Compile Include="Implementation\IHandlingMockQueue.cs" />
-    <Compile Include="Implementation\IHandlingMockQueueFactory.cs" />
+    <Compile Include="Implementation\IHttpMockPortGenerator.cs" />
     <Compile Include="Implementation\IStartedHttpMock.cs" />
     <Compile Include="Implementation\IStartedHttpMockFactory.cs" />
     <Compile Include="Implementation\IUnavailablePortsProvider.cs" />

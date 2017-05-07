@@ -1,32 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
+using HttpMocks.Implementation.Core;
 
 namespace HttpMocks
 {
     internal class HttpMockRunner : IHttpMockRunner
     {
         private readonly List<IStartedHttpMock> startedHttpMocks;
-        private readonly IHandlingMockQueueFactory handlingMockQueueFactory;
         private readonly IStartedHttpMockFactory startedHttpMockFactory;
+        private readonly IHttpListenerWrapperFactory httpListenerWrapperFactory;
 
-        public HttpMockRunner(IHandlingMockQueueFactory handlingMockQueueFactory, IStartedHttpMockFactory startedHttpMockFactory)
+        public HttpMockRunner(IStartedHttpMockFactory startedHttpMockFactory, IHttpListenerWrapperFactory httpListenerWrapperFactory)
         {
-            this.handlingMockQueueFactory = handlingMockQueueFactory;
             this.startedHttpMockFactory = startedHttpMockFactory;
+            this.httpListenerWrapperFactory = httpListenerWrapperFactory;
             startedHttpMocks = new List<IStartedHttpMock>();
         }
 
-        public void RunMocks(Uri mockUrl, HttpRequestMock[] httpRequestMocks)
+        public IStartedHttpMock RunMocks(IMockUrlEnumerator mockUrlEnumerator)
         {
-            var handlingMockQueue = handlingMockQueueFactory.Create(httpRequestMocks);
-            var startedHttpMock = startedHttpMockFactory.Create(mockUrl, handlingMockQueue);
-            startedHttpMock.Start();
+            var httpListenerWrapper = httpListenerWrapperFactory.CreateAndStart(mockUrlEnumerator);
+            var startedHttpMock = startedHttpMockFactory.Create(httpListenerWrapper);
 
             startedHttpMocks.Add(startedHttpMock);
+
+            return startedHttpMock;
         }
 
         public void VerifyAll()

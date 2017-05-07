@@ -1,9 +1,9 @@
-using System;
+using HttpMocks.Implementation.Core;
 
 namespace HttpMocks.Implementation
 {
     internal interface IStartedHttpMockFactory
     {
-        IStartedHttpMock Create(Uri mockUrl, IHandlingMockQueue handlingMockQueue);
+        IStartedHttpMock Create(IHttpListenerWrapper httpListenerWrapper);
     }
 }

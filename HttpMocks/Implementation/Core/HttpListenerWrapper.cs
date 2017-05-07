@@ -8,23 +8,29 @@ namespace HttpMocks.Implementation.Core
     {
         private readonly HttpListener httpListener;
 
-        public HttpListenerWrapper(Uri prefix)
+        public HttpListenerWrapper(Uri mockUrl)
         {
-            Prefix = prefix;
+            MockUrl = mockUrl;
             httpListener = new HttpListener();
-            httpListener.Prefixes.Add(prefix.ToString());
+            httpListener.Prefixes.Add(mockUrl.ToString());
         }
-
-        public Uri Prefix { get; }
 
         public void Start()
         {
+            if (httpListener.IsListening)
+            {
+                return;
+            }
+
             httpListener.Start();
         }
 
         public void Stop()
         {
-            httpListener.Stop();
+            if (httpListener.IsListening)
+            {
+                httpListener.Stop();
+            }
         }
 
         public async Task<HttpContext> GetContextAsync()
@@ -34,6 +40,8 @@ namespace HttpMocks.Implementation.Core
                 ? HttpContext.CreateInvalid()
                 : HttpContext.Create(context);
         }
+
+        public Uri MockUrl { get; }
 
         private async Task<HttpListenerContext> SafeGetContextAsync()
         {

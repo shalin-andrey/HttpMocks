@@ -10,8 +10,6 @@ namespace HttpMocks.Tests.Unit.Implementation
 {
     public class StartedHttpMockTest : UnitTest
     {
-        private Mock<IHandlingMockQueue> handlingMockQueue;
-        private Mock<IHttpMocksExceptionFactory> httpMocksExceptionFactory;
         private StartedHttpMock startedHttpMock;
         private Mock<IHttpListenerWrapper> httpListenerWrapper;
 
@@ -19,28 +17,18 @@ namespace HttpMocks.Tests.Unit.Implementation
         {
             base.SetUp();
 
-            handlingMockQueue = NewMock<IHandlingMockQueue>();
-            httpMocksExceptionFactory = NewMock<IHttpMocksExceptionFactory>();
             httpListenerWrapper = NewMock<IHttpListenerWrapper>();
-            startedHttpMock = new StartedHttpMock(httpListenerWrapper.Object, handlingMockQueue.Object, httpMocksExceptionFactory.Object);
+            startedHttpMock = new StartedHttpMock(httpListenerWrapper.Object);
         }
 
         [Test]
-        public void TestStartWhenFailStartHttpListener()
+        public void TestMockUrl()
         {
-            var mockUrl = new UriBuilder(@"http://localhost:345/path").Uri;
-            var exception = new Exception();
+            var mockUrl = new Uri(@"http://localhost:4389/");
 
-            httpListenerWrapper.Setup(x => x.Prefix).Returns(mockUrl);
-            httpListenerWrapper.Setup(x => x.Start()).Throws<Exception>();
-            httpMocksExceptionFactory
-                .Setup(x => x.CreateWithDiagnostic(mockUrl, "Can't start http listener", It.IsAny<Exception>()))
-                .Returns(exception);
-
-            startedHttpMock
-                .Invoking(x => x.Start())
-                .ShouldThrow<Exception>()
-                .Where(x => x == exception);
+            httpListenerWrapper.Setup(x => x.MockUrl).Returns(mockUrl);
+            
+            startedHttpMock.MockUrl.ShouldBeEquivalentTo(mockUrl);
         }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
-using HttpMocks.Exceptions;
 using HttpMocks.Implementation.Core;
 using HttpMocks.Verifications;
 
@@ -12,30 +11,17 @@ namespace HttpMocks.Implementation
     {
         private readonly IHttpListenerWrapper httpListenerWrapper;
         private readonly IHandlingMockQueue handlingMockQueue;
-        private readonly IHttpMocksExceptionFactory httpMocksExceptionFactory;
         private readonly List<VerificationResult> verificationMockResults;
         private bool stated;
-        private Task listenHttpMockTask;
+        private readonly Task listenHttpMockTask;
 
-        public StartedHttpMock(IHttpListenerWrapper httpListenerWrapper, IHandlingMockQueue handlingMockQueue, IHttpMocksExceptionFactory httpMocksExceptionFactory)
+        public StartedHttpMock(IHttpListenerWrapper httpListenerWrapper)
         {
             this.httpListenerWrapper = httpListenerWrapper;
-            this.handlingMockQueue = handlingMockQueue;
-            this.httpMocksExceptionFactory = httpMocksExceptionFactory;
-            verificationMockResults = new List<VerificationResult>();
-        }
 
-        public void Start()
-        {
+            handlingMockQueue = new HandlingMockQueue();
+            verificationMockResults = new List<VerificationResult>();
             stated = true;
-            try
-            {
-                httpListenerWrapper.Start();
-            }
-            catch (Exception exception)
-            {
-                throw httpMocksExceptionFactory.CreateWithDiagnostic(httpListenerWrapper.Prefix, "Can't start http listener", exception);
-            }
             listenHttpMockTask = StartAsync();
         }
 
@@ -45,6 +31,13 @@ namespace HttpMocks.Implementation
             httpListenerWrapper.Stop();
             return listenHttpMockTask.ContinueWith((task, state) => verificationMockResults.ToArray(), null);
         }
+
+        public void AppendMocks(HttpRequestMock[] httpRequestMocks)
+        {
+            handlingMockQueue.Enqueue(httpRequestMocks);
+        }
+
+        public Uri MockUrl => httpListenerWrapper.MockUrl;
 
         private async Task StartAsync()
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HttpMocks.Implementation
 {
-    internal class HttpMockPortGenerator
+    internal class HttpMockPortGenerator : IHttpMockPortGenerator
     {
         private readonly IUnavailablePortsProvider unavailablePortsProvider;
         private readonly int minPortValue;
