@@ -46,6 +46,7 @@
     <Compile Include="HttpMockRepository.cs" />
     <Compile Include="HttpMockRunner.cs" />
     <Compile Include="IHttpMock.cs" />
+    <Compile Include="IHttpMockExtensions.cs" />
     <Compile Include="IHttpMockRunner.cs" />
     <Compile Include="Implementation\Core\HttpContext.cs" />
     <Compile Include="Implementation\Core\HttpListenerWrapper.cs" />

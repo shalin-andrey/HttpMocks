@@ -1,24 +1,17 @@
 ﻿using System;
 using HttpMocks.Whens;
+using HttpMocks.Whens.RequestPatterns;
 
 namespace HttpMocks
 {
     public interface IHttpMock : IDisposable
     {
-        IHttpRequestMock WhenRequestGet();
-        IHttpRequestMock WhenRequestGet(string path);
-
-        IHttpRequestMock WhenRequestPost();
-        IHttpRequestMock WhenRequestPost(string path);
-
-        IHttpRequestMock WhenRequestPut();
-        IHttpRequestMock WhenRequestPut(string path);
-
-        IHttpRequestMock WhenRequestDelete();
-        IHttpRequestMock WhenRequestDelete(string path);
-
-        IHttpRequestMock WhenRequestPatch();
-        IHttpRequestMock WhenRequestPatch(string path);
+        IHttpRequestMock WhenRequestGet(IHttpRequestPathPattern pathPattern);
+        IHttpRequestMock WhenRequestPost(IHttpRequestPathPattern pathPattern);
+        IHttpRequestMock WhenRequestPut(IHttpRequestPathPattern pathPattern);
+        IHttpRequestMock WhenRequestDelete(IHttpRequestPathPattern pathPattern);
+        IHttpRequestMock WhenRequestPatch(IHttpRequestPathPattern pathPattern);
+        IHttpRequestMock WhenRequest();
 
         void Run();
 

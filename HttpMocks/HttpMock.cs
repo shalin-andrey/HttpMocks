@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HttpMocks.Implementation;
 using HttpMocks.Whens;
+using HttpMocks.Whens.RequestPatterns;
 
 namespace HttpMocks
 {
@@ -19,64 +20,44 @@ namespace HttpMocks
 
         public Uri MockUri => startedHttpMock.MockUrl;
 
-        public IHttpRequestMock WhenRequestGet()
-        {
-            return WhenRequestGet(string.Empty);
-        }
-
-        public IHttpRequestMock WhenRequestGet(string path)
+        public IHttpRequestMock WhenRequestGet(IHttpRequestPathPattern pathPattern)
         {
             return CreateMockBuilder()
                 .Method("GET")
-                .Path(path);
+                .Path(pathPattern);
         }
 
-        public IHttpRequestMock WhenRequestPost()
-        {
-            return WhenRequestPost(string.Empty);
-        }
-
-        public IHttpRequestMock WhenRequestPost(string path)
+        public IHttpRequestMock WhenRequestPost(IHttpRequestPathPattern pathPattern)
         {
             return CreateMockBuilder()
                 .Method("POST")
-                .Path(path);
+                .Path(pathPattern);
         }
 
-        public IHttpRequestMock WhenRequestPut()
-        {
-            return WhenRequestPut(string.Empty);
-        }
-
-        public IHttpRequestMock WhenRequestPut(string path)
+        public IHttpRequestMock WhenRequestPut(IHttpRequestPathPattern pathPattern)
         {
             return CreateMockBuilder()
                 .Method("PUT")
-                .Path(path);
+                .Path(pathPattern);
         }
 
-        public IHttpRequestMock WhenRequestDelete()
-        {
-            return WhenRequestDelete(string.Empty);
-        }
-
-        public IHttpRequestMock WhenRequestDelete(string path)
+        public IHttpRequestMock WhenRequestDelete(IHttpRequestPathPattern pathPattern)
         {
             return CreateMockBuilder()
                 .Method("DELETE")
-                .Path(path);
+                .Path(pathPattern);
         }
 
-        public IHttpRequestMock WhenRequestPatch()
-        {
-            return WhenRequestPatch(string.Empty);
-        }
-
-        public IHttpRequestMock WhenRequestPatch(string path)
+        public IHttpRequestMock WhenRequestPatch(IHttpRequestPathPattern pathPattern)
         {
             return CreateMockBuilder()
                 .Method("PATCH")
-                .Path(path);
+                .Path(pathPattern);
+        }
+
+        public IHttpRequestMock WhenRequest()
+        {
+            return CreateMockBuilder();
         }
 
         public void Run()
