@@ -1,17 +1,22 @@
 ﻿using FluentAssertions;
 using HttpMocks.Implementation;
 using HttpMocks.Whens.RequestPatterns;
-using HttpMocks.Whens.RequestPatterns.ContentPatterns;
-using HttpMocks.Whens.RequestPatterns.HeadersPatterns;
-using HttpMocks.Whens.RequestPatterns.MethodPatterns;
-using HttpMocks.Whens.RequestPatterns.PathPatterns;
-using HttpMocks.Whens.RequestPatterns.QueryPatterns;
+using Moq;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation
 {
     public class HttpRequestPatternTests : UnitTest
     {
+        private Mock<IHttpMockDebugLogger> httpMockDebugLogger;
+
+        public override void SetUp()
+        {
+            base.SetUp();
+
+            httpMockDebugLogger = NewMock<IHttpMockDebugLogger>(MockBehavior.Loose);
+        }
+
         [Test]
         [TestCase("GET", "GET", true)]
         [TestCase("GET", "get", true)]
@@ -34,7 +39,7 @@ namespace HttpMocks.Tests.Unit.Implementation
                 Method = expectedMethod,
                 Path = pathPattern
             };
-            httpRequestPattern.IsMatch(httpRequestInfo).ShouldBeEquivalentTo(expected);
+            httpRequestPattern.IsMatch(httpRequestInfo, httpMockDebugLogger.Object).ShouldBeEquivalentTo(expected);
         }
 
         [Test]
@@ -67,7 +72,7 @@ namespace HttpMocks.Tests.Unit.Implementation
                 ContentType = contentType
             };
             
-            httpRequestPattern.IsMatch(httpRequestInfo).ShouldBeEquivalentTo(isMatchResult);
+            httpRequestPattern.IsMatch(httpRequestInfo, httpMockDebugLogger.Object).ShouldBeEquivalentTo(isMatchResult);
         }
     }
 }

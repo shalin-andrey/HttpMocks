@@ -16,9 +16,9 @@ namespace HttpMocks.Tests.Unit.Implementation
         {
         }
 
-        protected static Mock<T> NewMock<T>() where T : class 
+        protected static Mock<T> NewMock<T>(MockBehavior mockBehavior = MockBehavior.Strict) where T : class 
         {
-            return new Mock<T>(MockBehavior.Strict);
+            return new Mock<T>(mockBehavior);
         }
 
         protected string GenBase64String(int binaryLength = 100)

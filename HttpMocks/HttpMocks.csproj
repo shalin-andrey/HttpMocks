@@ -39,6 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugLoggers\ConsoleHttpMockDebugLogger.cs" />
+    <Compile Include="DebugLoggers\ConsoleHttpMockDebugLoggerFactory.cs" />
+    <Compile Include="DebugLoggers\FakeHttpMockDebugLogger.cs" />
+    <Compile Include="DebugLoggers\FakeHttpMockDebugLoggerFactory.cs" />
+    <Compile Include="DebugLoggers\HttpMockDebugLoggerBase.cs" />
+    <Compile Include="DebugLoggers\HttpRequestPatternMatchResults.cs" />
     <Compile Include="Exceptions\AssertHttpMockException.cs" />
     <Compile Include="Exceptions\HttpMocksExceptionFactory.cs" />
     <Compile Include="Exceptions\IHttpMocksExceptionFactory.cs" />
@@ -46,6 +52,8 @@
     <Compile Include="HttpMockRepository.cs" />
     <Compile Include="HttpMockRunner.cs" />
     <Compile Include="IHttpMock.cs" />
+    <Compile Include="IHttpMockDebugLogger.cs" />
+    <Compile Include="IHttpMockDebugLoggerFactory.cs" />
     <Compile Include="IHttpMockExtensions.cs" />
     <Compile Include="IHttpMockRunner.cs" />
     <Compile Include="Implementation\Core\HttpContext.cs" />

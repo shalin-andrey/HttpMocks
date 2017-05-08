@@ -2,16 +2,26 @@
 using HttpMocks.Implementation;
 using HttpMocks.Thens;
 using HttpMocks.Whens.RequestPatterns;
+using Moq;
 using NUnit.Framework;
 
 namespace HttpMocks.Tests.Unit.Implementation
 {
     public class HandlingMockQueueTests : UnitTest
     {
+        private Mock<IHttpMockDebugLogger> httpMockDebugLogger;
+
+        public override void SetUp()
+        {
+            base.SetUp();
+
+            httpMockDebugLogger = NewMock<IHttpMockDebugLogger>(MockBehavior.Loose);
+        }
+
         [Test]
         public void TestDequeueWhenEmpty()
         {
-            var handlingMockQueue = new HandlingMockQueue();
+            var handlingMockQueue = new HandlingMockQueue(httpMockDebugLogger.Object);
             handlingMockQueue.Enqueue(new HttpRequestMock[0]);
             handlingMockQueue.Dequeue(CreateRequestInfo("get", "/")).Should().BeNull();
         }
@@ -20,7 +30,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         public void TestDequeueWhenOneMock()
         {
             var mocks = new[] {CreateMock("get")};
-            var handlingMockQueue = new HandlingMockQueue();
+            var handlingMockQueue = new HandlingMockQueue(httpMockDebugLogger.Object);
             handlingMockQueue.Enqueue(mocks);
 
             var handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
@@ -42,7 +52,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         public void TestDequeueWhenChainMocks()
         {
             var mocks = new[] {CreateMock("get"), CreateMock("get")};
-            var handlingMockQueue = new HandlingMockQueue();
+            var handlingMockQueue = new HandlingMockQueue(httpMockDebugLogger.Object);
             handlingMockQueue.Enqueue(mocks);
 
             var handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));
@@ -65,7 +75,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         {
             var httpRequestMock = CreateMock("get");
             var mocks = new[] {CreateMock("get"), httpRequestMock};
-            var handlingMockQueue = new HandlingMockQueue();
+            var handlingMockQueue = new HandlingMockQueue(httpMockDebugLogger.Object);
             handlingMockQueue.Enqueue(mocks);
 
             var handlingInfo = handlingMockQueue.Dequeue(CreateRequestInfo("get", "/"));

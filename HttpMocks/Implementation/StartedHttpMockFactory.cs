@@ -5,9 +5,9 @@ namespace HttpMocks.Implementation
 {
     internal class StartedHttpMockFactory : IStartedHttpMockFactory
     {
-        public IStartedHttpMock Create(IHttpListenerWrapper httpListenerWrapper)
+        public IStartedHttpMock Create(IHttpListenerWrapper httpListenerWrapper, IHttpMockDebugLogger httpMockDebugLogger)
         {
-            return new StartedHttpMock(httpListenerWrapper);
+            return new StartedHttpMock(httpListenerWrapper, httpMockDebugLogger);
         }
     }
 

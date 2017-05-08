@@ -1,4 +1,5 @@
 ﻿using System;
+using HttpMocks.DebugLoggers;
 using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
 using HttpMocks.Implementation.Core;
@@ -7,15 +8,16 @@ namespace HttpMocks
 {
     public class HttpMockRepository
     {
-        private static readonly UnavailablePortsProvider unavailablePortsProvider = new UnavailablePortsProvider();
-        private static readonly HttpListenerWrapperFactory httpListenerWrapperFactory = new HttpListenerWrapperFactory(new HttpMocksExceptionFactory(unavailablePortsProvider));
-        private static readonly StartedHttpMockFactory startedHttpMockFactory = new StartedHttpMockFactory();
+        private static readonly IUnavailablePortsProvider unavailablePortsProvider = new UnavailablePortsProvider();
+        private static readonly IHttpListenerWrapperFactory httpListenerWrapperFactory = new HttpListenerWrapperFactory(new HttpMocksExceptionFactory(unavailablePortsProvider));
+        private static readonly IStartedHttpMockFactory startedHttpMockFactory = new StartedHttpMockFactory();
+        private static readonly IHttpMockDebugLoggerFactory httpMockDebugLoggerFactory = new FakeHttpMockDebugLoggerFactory();
 
         private readonly IHttpMockRunner httpMockRunner;
         private readonly IMockUrlEnumeratorFactory mockUrlEnumeratorFactory;
 
         public HttpMockRepository()
-            : this(new HttpMockRunner(startedHttpMockFactory, httpListenerWrapperFactory), new MockUrlEnumeratorFactory(new HttpMockPortGenerator(unavailablePortsProvider)))
+            : this(new HttpMockRunner(startedHttpMockFactory, httpListenerWrapperFactory, httpMockDebugLoggerFactory), new MockUrlEnumeratorFactory(new HttpMockPortGenerator(unavailablePortsProvider)))
         {
         }
 
@@ -25,13 +27,20 @@ namespace HttpMocks
             this.mockUrlEnumeratorFactory = mockUrlEnumeratorFactory;
         }
 
-        public IHttpMock New(string host, int port = 0)
+        public IHttpMock New(string host, int port)
         {
             if (string.IsNullOrWhiteSpace(host)) throw new ArgumentNullException(nameof(host));
-            
-            var mockUrlEnumerator = port <= 0
-                ? mockUrlEnumeratorFactory.CreateRandomPorts(host)
-                : mockUrlEnumeratorFactory.CreateSingle(host, port);
+            if (port <= 0) throw new ArgumentOutOfRangeException(nameof(port));
+
+            var mockUrlEnumerator = mockUrlEnumeratorFactory.CreateSingle(host, port);
+            return New(mockUrlEnumerator);
+        }
+
+        public IHttpMock New(string host)
+        {
+            if (string.IsNullOrWhiteSpace(host)) throw new ArgumentNullException(nameof(host));
+
+            var mockUrlEnumerator = mockUrlEnumeratorFactory.CreateRandomPorts(host);
             return New(mockUrlEnumerator);
         }
 

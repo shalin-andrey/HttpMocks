@@ -6,10 +6,12 @@ namespace HttpMocks.Implementation
 {
     internal class HandlingMockQueue : IHandlingMockQueue
     {
+        private readonly IHttpMockDebugLogger httpMockDebugLogger;
         private readonly List<HttpRequestMockHandlingInfo> handlingInfos;
 
-        public HandlingMockQueue()
+        public HandlingMockQueue(IHttpMockDebugLogger httpMockDebugLogger)
         {
+            this.httpMockDebugLogger = httpMockDebugLogger;
             handlingInfos = new List<HttpRequestMockHandlingInfo>();
         }
 
@@ -25,10 +27,10 @@ namespace HttpMocks.Implementation
         {
             lock (handlingInfos)
             {
-                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(httpRequestInfo) && i.HasAttempts());
+                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(httpRequestInfo, httpMockDebugLogger) && i.HasAttempts());
                 if (handlingInfo == null)
                 {
-                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(httpRequestInfo));
+                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(httpRequestInfo, httpMockDebugLogger));
                 }
 
                 handlingInfo?.IncreaseUsageCount();

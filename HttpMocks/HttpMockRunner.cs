@@ -12,20 +12,25 @@ namespace HttpMocks
         private readonly List<IStartedHttpMock> startedHttpMocks;
         private readonly IStartedHttpMockFactory startedHttpMockFactory;
         private readonly IHttpListenerWrapperFactory httpListenerWrapperFactory;
+        private readonly IHttpMockDebugLoggerFactory httpMockDebugLoggerFactory;
 
-        public HttpMockRunner(IStartedHttpMockFactory startedHttpMockFactory, IHttpListenerWrapperFactory httpListenerWrapperFactory)
+        public HttpMockRunner(IStartedHttpMockFactory startedHttpMockFactory, IHttpListenerWrapperFactory httpListenerWrapperFactory, IHttpMockDebugLoggerFactory httpMockDebugLoggerFactory)
         {
             this.startedHttpMockFactory = startedHttpMockFactory;
             this.httpListenerWrapperFactory = httpListenerWrapperFactory;
+            this.httpMockDebugLoggerFactory = httpMockDebugLoggerFactory;
             startedHttpMocks = new List<IStartedHttpMock>();
         }
 
         public IStartedHttpMock RunMocks(IMockUrlEnumerator mockUrlEnumerator)
         {
             var httpListenerWrapper = httpListenerWrapperFactory.CreateAndStart(mockUrlEnumerator);
-            var startedHttpMock = startedHttpMockFactory.Create(httpListenerWrapper);
+            var httpMockDebugLogger = httpMockDebugLoggerFactory.Create(httpListenerWrapper.MockUrl);
+            var startedHttpMock = startedHttpMockFactory.Create(httpListenerWrapper, httpMockDebugLogger);
 
             startedHttpMocks.Add(startedHttpMock);
+
+            httpMockDebugLogger.LogRunHttpMock();
 
             return startedHttpMock;
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using HttpMocks.Exceptions;
 using HttpMocks.Implementation;
@@ -14,6 +15,7 @@ namespace HttpMocks.Tests.Unit.Implementation
         private Mock<IStartedHttpMockFactory> startedHttpMockFactory;
         private HttpMockRunner httpMockRunner;
         private Mock<IHttpListenerWrapperFactory> httpListenerWrapperFactory;
+        private Mock<IHttpMockDebugLoggerFactory> httpMockDebugLoggerFactory;
 
         public override void SetUp()
         {
@@ -21,7 +23,8 @@ namespace HttpMocks.Tests.Unit.Implementation
 
             startedHttpMockFactory = NewMock<IStartedHttpMockFactory>();
             httpListenerWrapperFactory = NewMock<IHttpListenerWrapperFactory>();
-            httpMockRunner = new HttpMockRunner(startedHttpMockFactory.Object, httpListenerWrapperFactory.Object);
+            httpMockDebugLoggerFactory = NewMock<IHttpMockDebugLoggerFactory>(MockBehavior.Loose);
+            httpMockRunner = new HttpMockRunner(startedHttpMockFactory.Object, httpListenerWrapperFactory.Object, httpMockDebugLoggerFactory.Object);
         }
 
         [Test]
@@ -30,9 +33,13 @@ namespace HttpMocks.Tests.Unit.Implementation
             var mockUrlEnumerator = NewMock<IMockUrlEnumerator>();
             var httpListenerWrapper = NewMock<IHttpListenerWrapper>();
             var startedHttpMock = NewMock<IStartedHttpMock>();
+            var httpMockDebugLogger = NewMock<IHttpMockDebugLogger>(MockBehavior.Loose);
+            var mockUrl = new Uri("http://localhost:80/");
 
+            httpListenerWrapper.Setup(x => x.MockUrl).Returns(mockUrl);
             httpListenerWrapperFactory.Setup(x => x.CreateAndStart(mockUrlEnumerator.Object)).Returns(httpListenerWrapper.Object);
-            startedHttpMockFactory.Setup(x => x.Create(httpListenerWrapper.Object)).Returns(startedHttpMock.Object);
+            httpMockDebugLoggerFactory.Setup(x => x.Create(mockUrl)).Returns(httpMockDebugLogger.Object);
+            startedHttpMockFactory.Setup(x => x.Create(httpListenerWrapper.Object, httpMockDebugLogger.Object)).Returns(startedHttpMock.Object);
 
             var actual = httpMockRunner.RunMocks(mockUrlEnumerator.Object);
 
@@ -45,9 +52,13 @@ namespace HttpMocks.Tests.Unit.Implementation
             var mockUrlEnumerator = NewMock<IMockUrlEnumerator>();
             var httpListenerWrapper = NewMock<IHttpListenerWrapper>();
             var startedHttpMock = NewMock<IStartedHttpMock>();
+            var httpMockDebugLogger = NewMock<IHttpMockDebugLogger>(MockBehavior.Loose);
+            var mockUrl = new Uri("http://localhost:80/");
 
+            httpListenerWrapper.Setup(x => x.MockUrl).Returns(mockUrl);
             httpListenerWrapperFactory.Setup(x => x.CreateAndStart(mockUrlEnumerator.Object)).Returns(httpListenerWrapper.Object);
-            startedHttpMockFactory.Setup(x => x.Create(httpListenerWrapper.Object)).Returns(startedHttpMock.Object);
+            httpMockDebugLoggerFactory.Setup(x => x.Create(mockUrl)).Returns(httpMockDebugLogger.Object);
+            startedHttpMockFactory.Setup(x => x.Create(httpListenerWrapper.Object, httpMockDebugLogger.Object)).Returns(startedHttpMock.Object);
 
             httpMockRunner.RunMocks(mockUrlEnumerator.Object);
 
@@ -70,9 +81,13 @@ namespace HttpMocks.Tests.Unit.Implementation
             var mockUrlEnumerator = NewMock<IMockUrlEnumerator>();
             var httpListenerWrapper = NewMock<IHttpListenerWrapper>();
             var startedHttpMock = NewMock<IStartedHttpMock>();
+            var httpMockDebugLogger = NewMock<IHttpMockDebugLogger>(MockBehavior.Loose);
+            var mockUrl = new Uri("http://localhost:80/");
 
+            httpListenerWrapper.Setup(x => x.MockUrl).Returns(mockUrl);
             httpListenerWrapperFactory.Setup(x => x.CreateAndStart(mockUrlEnumerator.Object)).Returns(httpListenerWrapper.Object);
-            startedHttpMockFactory.Setup(x => x.Create(httpListenerWrapper.Object)).Returns(startedHttpMock.Object);
+            httpMockDebugLoggerFactory.Setup(x => x.Create(mockUrl)).Returns(httpMockDebugLogger.Object);
+            startedHttpMockFactory.Setup(x => x.Create(httpListenerWrapper.Object, httpMockDebugLogger.Object)).Returns(startedHttpMock.Object);
 
             httpMockRunner.RunMocks(mockUrlEnumerator.Object);
             

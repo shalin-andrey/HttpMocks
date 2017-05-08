@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
 using HttpMocks.Implementation.Core;
 using HttpMocks.Verifications;
@@ -10,26 +9,30 @@ namespace HttpMocks.Implementation
     internal class StartedHttpMock : IStartedHttpMock
     {
         private readonly IHttpListenerWrapper httpListenerWrapper;
+        private readonly IHttpMockDebugLogger httpMockDebugLogger;
         private readonly IHandlingMockQueue handlingMockQueue;
         private readonly List<VerificationResult> verificationMockResults;
         private bool stated;
         private readonly Task listenHttpMockTask;
 
-        public StartedHttpMock(IHttpListenerWrapper httpListenerWrapper)
+        public StartedHttpMock(IHttpListenerWrapper httpListenerWrapper, IHttpMockDebugLogger httpMockDebugLogger)
         {
             this.httpListenerWrapper = httpListenerWrapper;
+            this.httpMockDebugLogger = httpMockDebugLogger;
 
-            handlingMockQueue = new HandlingMockQueue();
+            handlingMockQueue = new HandlingMockQueue(httpMockDebugLogger);
             verificationMockResults = new List<VerificationResult>();
             stated = true;
             listenHttpMockTask = StartAsync();
         }
 
-        public Task<VerificationResult[]> StopAsync()
+        public async Task<VerificationResult[]> StopAsync()
         {
             stated = false;
             httpListenerWrapper.Stop();
-            return listenHttpMockTask.ContinueWith((task, state) => verificationMockResults.ToArray(), null);
+            var verificationResults = await listenHttpMockTask.ContinueWith((task, state) => verificationMockResults.ToArray(), null).ConfigureAwait(false);
+            httpMockDebugLogger.LogStopHttpMock(verificationResults);
+            return verificationResults;
         }
 
         public void AppendMocks(HttpRequestMock[] httpRequestMocks)
@@ -52,58 +55,19 @@ namespace HttpMocks.Implementation
                 try
                 {
                     var request = await context.ReadRequestAsync().ConfigureAwait(false);
-
-                    LogHttpRequestInfo(request);
-
+                    httpMockDebugLogger.LogHttpRequest(request);
                     var response = await ProcessRequestAsync(request).ConfigureAwait(false);
-
-                    LogHttpResponseInfo(response);
-
+                    httpMockDebugLogger.LogHttpResponse(response);
                     await context.WriteResponseAsync(response).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
                     var verificationResult = VerificationResult.Create($"Unhandled exception: {e}");
                     verificationMockResults.Add(verificationResult);
+                    httpMockDebugLogger.LogUnhandledException(e);
                     await context.WriteResponseAsync(HttpResponseInfo.Create(500)).ConfigureAwait(false);
                 }
             }
-        }
-
-        private void LogHttpRequestInfo(HttpRequestInfo httpRequestInfo)
-        {
-            Console.WriteLine($"HM.Request: {httpRequestInfo.Method} {httpRequestInfo.Path}?{HttpQueryToString(httpRequestInfo.Query)}");
-            foreach (var headerName in httpRequestInfo.Headers.AllKeys)
-            {
-                var headerValue = httpRequestInfo.Headers[headerName];
-                Console.WriteLine($"HM.Request: {headerName}: {headerValue}");
-            }
-
-            Console.WriteLine("HM.Request:");
-            Console.WriteLine($"HM.Request: {httpRequestInfo.ContentBytes.Length}");
-        }
-
-        private void LogHttpResponseInfo(HttpResponseInfo httpResponseInfo)
-        {
-            Console.WriteLine($"HM.Response: HTTP/1.1 {httpResponseInfo.StatusCode}");
-            foreach (var headerName in httpResponseInfo.Headers.AllKeys)
-            {
-                var headerValue = httpResponseInfo.Headers[headerName];
-                Console.WriteLine($"HM.Response: {headerName}: {headerValue}");
-            }
-
-            Console.WriteLine("HM.Response:");
-            Console.WriteLine($"HM.Response: {httpResponseInfo.ContentBytes.Length}");
-        }
-
-        private string HttpQueryToString(NameValueCollection query)
-        {
-            var parameterAndValuePairs = new List<string>();
-            foreach (var parameterName in query.AllKeys)
-            {
-                parameterAndValuePairs.Add($"{parameterName}={query[parameterName]}");
-            }
-            return string.Join("&", parameterAndValuePairs);
         }
 
         private async Task<HttpResponseInfo> ProcessRequestAsync(HttpRequestInfo request)
@@ -115,6 +79,7 @@ namespace HttpMocks.Implementation
                 var verificationResult = VerificationResult.Create(
                     $"Actual request {request.Method} {request.Path}, but not expected.");
                 verificationMockResults.Add(verificationResult);
+                httpMockDebugLogger.LogNotExpected(request);
                 return HttpResponseInfo.Create(500);
             }
 
@@ -124,6 +89,7 @@ namespace HttpMocks.Implementation
                     $"Actual request {request.Method} {request.Path} repeat" +
                     $" count {handlingInfo.UsageCount}, but max expected repeat count {handlingInfo.ResponseMock.RepeatCount}.");
                 verificationMockResults.Add(verificationResult);
+                httpMockDebugLogger.LogCountSpent(request, handlingInfo.UsageCount, handlingInfo.ResponseMock.RepeatCount);
                 return HttpResponseInfo.Create(500);
             }
 
