@@ -16,7 +16,7 @@ namespace HttpMocks.Whens
 
         IHttpResponseMock ThenResponse(int statusCode);
         IHttpResponseMock ThenResponse();
-        ICustomHttpResponseMock ThenResponse(Func<HttpRequest, HttpResponse> responseInfoBuilder);
-        ICustomHttpResponseMock ThenResponse(Func<HttpRequest, Task<HttpResponse>> asyncResponseInfoBuilder);
+        ICustomHttpResponseMock ThenResponse(Func<HttpRequest, HttpResponse> responseBuilder);
+        ICustomHttpResponseMock ThenResponse(Func<HttpRequest, Task<HttpResponse>> asyncResponseBuilder);
     }
 }
