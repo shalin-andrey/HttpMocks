@@ -2,11 +2,11 @@ using System.Collections.Specialized;
 
 namespace HttpMocks.Implementation
 {
-    public class HttpResponseInfo
+    public class HttpResponse
     {
-        public static HttpResponseInfo Create(int statusCode, byte[] contentBytes, string contentType, NameValueCollection headers)
+        public static HttpResponse Create(int statusCode, byte[] contentBytes, string contentType, NameValueCollection headers)
         {
-            return new HttpResponseInfo
+            return new HttpResponse
             {
                 StatusCode = statusCode,
                 ContentBytes = contentBytes,
@@ -15,7 +15,7 @@ namespace HttpMocks.Implementation
             };
         }
 
-        public static HttpResponseInfo Create(int statusCode)
+        public static HttpResponse Create(int statusCode)
         {
             return Create(statusCode, new byte[0], null, new NameValueCollection());
         }

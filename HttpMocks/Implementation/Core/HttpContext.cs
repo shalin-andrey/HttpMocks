@@ -26,18 +26,18 @@ namespace HttpMocks.Implementation.Core
 
         public bool IsInvalid { get; }
 
-        public async Task<HttpRequestInfo> ReadRequestAsync()
+        public async Task<HttpRequest> ReadRequestAsync()
         {
             var listenerRequest = httpListenerContext.Request;
             var requestContentBytes = await ReadInputStreamAsync(listenerRequest.ContentLength64, listenerRequest.InputStream).ConfigureAwait(false);
-            return HttpRequestInfo.Create(listenerRequest.HttpMethod,
+            return HttpRequest.Create(listenerRequest.HttpMethod,
                 listenerRequest.Url.LocalPath, listenerRequest.QueryString,
                 listenerRequest.Headers,
                 requestContentBytes,
                 listenerRequest.ContentType);
         }
 
-        public async Task WriteResponseAsync(HttpResponseInfo response)
+        public async Task WriteResponseAsync(HttpResponse response)
         {
             httpListenerContext.Response.SendChunked = false;
             httpListenerContext.Response.StatusCode = response.StatusCode;

@@ -65,12 +65,12 @@ namespace HttpMocks.Implementation
                     var verificationResult = VerificationResult.Create($"Unhandled exception: {e}");
                     verificationMockResults.Add(verificationResult);
                     httpMockDebugLogger.LogUnhandledException(e);
-                    await context.WriteResponseAsync(HttpResponseInfo.Create(500)).ConfigureAwait(false);
+                    await context.WriteResponseAsync(HttpResponse.Create(500)).ConfigureAwait(false);
                 }
             }
         }
 
-        private async Task<HttpResponseInfo> ProcessRequestAsync(HttpRequestInfo request)
+        private async Task<HttpResponse> ProcessRequestAsync(HttpRequest request)
         {
             var handlingInfo = handlingMockQueue.Dequeue(request);
 
@@ -80,7 +80,7 @@ namespace HttpMocks.Implementation
                     $"Actual request {request.Method} {request.Path}, but not expected.");
                 verificationMockResults.Add(verificationResult);
                 httpMockDebugLogger.LogNotExpected(request);
-                return HttpResponseInfo.Create(500);
+                return HttpResponse.Create(500);
             }
 
             if (!handlingInfo.IsUsageCountValid())
@@ -90,7 +90,7 @@ namespace HttpMocks.Implementation
                     $" count {handlingInfo.UsageCount}, but max expected repeat count {handlingInfo.ResponseMock.RepeatCount}.");
                 verificationMockResults.Add(verificationResult);
                 httpMockDebugLogger.LogCountSpent(request, handlingInfo.UsageCount, handlingInfo.ResponseMock.RepeatCount);
-                return HttpResponseInfo.Create(500);
+                return HttpResponse.Create(500);
             }
 
             var httpResponseMock = handlingInfo.ResponseMock;
@@ -100,13 +100,13 @@ namespace HttpMocks.Implementation
                 return await SafeInvokeResponseInfoBuilderAsync(httpResponseMock.ResponseInfoBuilder, request).ConfigureAwait(false);
             }
 
-            return HttpResponseInfo.Create(httpResponseMock.StatusCode,
+            return HttpResponse.Create(httpResponseMock.StatusCode,
                 httpResponseMock.Content.Bytes,
                 httpResponseMock.Content.Type,
                 httpResponseMock.Headers);
         }
 
-        private async Task<HttpResponseInfo> SafeInvokeResponseInfoBuilderAsync(Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder, HttpRequestInfo request)
+        private async Task<HttpResponse> SafeInvokeResponseInfoBuilderAsync(Func<HttpRequest, Task<HttpResponse>> asyncResponseInfoBuilder, HttpRequest request)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace HttpMocks.Implementation
             {
                 var verificationResult = VerificationResult.Create($"Unhandled exception from response info builder: {e}");
                 verificationMockResults.Add(verificationResult);
-                return HttpResponseInfo.Create(500);
+                return HttpResponse.Create(500);
             }
         }
     }

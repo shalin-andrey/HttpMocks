@@ -34,7 +34,7 @@ namespace HttpMocks.Tests.Unit.Implementation
                 Content = ContentPattern.Any()
             };
             var httpRequestPattern = new HttpRequestPattern(httpRequestMock);
-            var httpRequestInfo = new HttpRequestInfo
+            var httpRequestInfo = new HttpRequest
             {
                 Method = expectedMethod,
                 Path = pathPattern
@@ -64,7 +64,7 @@ namespace HttpMocks.Tests.Unit.Implementation
                 Headers = HeadersPattern.Any()
             };
             var httpRequestPattern = new HttpRequestPattern(httpRequestMock);
-            var httpRequestInfo = new HttpRequestInfo
+            var httpRequestInfo = new HttpRequest
             {
                 Method = method,
                 Path = path,

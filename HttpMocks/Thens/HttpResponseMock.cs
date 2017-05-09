@@ -17,6 +17,6 @@ namespace HttpMocks.Thens
         public HttpResponseMockContent Content { get; set; }
         public NameValueCollection Headers { get; }
         public int RepeatCount { get; set; }
-        public Func<HttpRequestInfo, Task<HttpResponseInfo>> ResponseInfoBuilder { get; set; }
+        public Func<HttpRequest, Task<HttpResponse>> ResponseInfoBuilder { get; set; }
     }
 }

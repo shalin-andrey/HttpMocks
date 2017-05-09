@@ -85,7 +85,7 @@ namespace HttpMocks.Tests.Unit.Implementation.Whens
         [Test]
         public void TestThenResponseWhenInfoBuilder()
         {
-            httpRequestMockBuilder.ThenResponse(x => new HttpResponseInfo());
+            httpRequestMockBuilder.ThenResponse(x => new HttpResponse());
 
             var httpRequestMock = httpRequestMockBuilder.Build();
             httpRequestMock.Response.Should().NotBeNull();

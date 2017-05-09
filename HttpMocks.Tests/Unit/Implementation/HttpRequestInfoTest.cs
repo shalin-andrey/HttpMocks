@@ -18,7 +18,7 @@ namespace HttpMocks.Tests.Unit.Implementation
             var contentBytes = new byte[0];
             const string contentType = "contentType";
 
-            var httpRequestInfo = HttpRequestInfo.Create(method, path, query, headers, contentBytes, contentType);
+            var httpRequestInfo = HttpRequest.Create(method, path, query, headers, contentBytes, contentType);
 
             httpRequestInfo.Method.ShouldBeEquivalentTo(method);
             httpRequestInfo.Path.ShouldBeEquivalentTo(path);

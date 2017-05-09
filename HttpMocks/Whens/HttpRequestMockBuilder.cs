@@ -74,7 +74,7 @@ namespace HttpMocks.Whens
             return httpResponseMockBuilder = new HttpResponseMockBuilder();
         }
 
-        public ICustomHttpResponseMock ThenResponse(Func<HttpRequestInfo, HttpResponseInfo> responseInfoBuilder)
+        public ICustomHttpResponseMock ThenResponse(Func<HttpRequest, HttpResponse> responseInfoBuilder)
         {
             return httpResponseMockBuilder = new HttpResponseMockBuilder(httpRequestInfo => Task.FromResult(responseInfoBuilder(httpRequestInfo)));
         }
@@ -85,7 +85,7 @@ namespace HttpMocks.Whens
             return httpRequestMock;
         }
 
-        public ICustomHttpResponseMock ThenResponse(Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder)
+        public ICustomHttpResponseMock ThenResponse(Func<HttpRequest, Task<HttpResponse>> asyncResponseInfoBuilder)
         {
             return httpResponseMockBuilder = new HttpResponseMockBuilder(asyncResponseInfoBuilder);
         }

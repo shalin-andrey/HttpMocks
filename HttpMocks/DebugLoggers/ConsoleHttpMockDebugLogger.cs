@@ -7,7 +7,7 @@ namespace HttpMocks.DebugLoggers
 {
     public class ConsoleHttpMockDebugLogger : HttpMockDebugLoggerBase
     {
-        public override void LogHttpRequest(HttpRequestInfo request)
+        public override void LogHttpRequest(HttpRequest request)
         {
             Console.WriteLine($"HM.Request: {request.Method} {request.Path}?{HttpQueryToString(request.Query)}");
             foreach (var headerName in request.Headers.AllKeys)
@@ -20,7 +20,7 @@ namespace HttpMocks.DebugLoggers
             Console.WriteLine($"HM.Request: {request.ContentBytes.Length}");
         }
 
-        public override void LogHttpResponse(HttpResponseInfo response)
+        public override void LogHttpResponse(HttpResponse response)
         {
             Console.WriteLine($"HM.Response: HTTP/1.1 {response.StatusCode}");
             foreach (var headerName in response.Headers.AllKeys)

@@ -2,11 +2,11 @@
 
 namespace HttpMocks.Implementation
 {
-    public class HttpRequestInfo
+    public class HttpRequest
     {
-        public static HttpRequestInfo Create(string method, string path, NameValueCollection query, NameValueCollection headers, byte[] contentBytes, string contentType)
+        public static HttpRequest Create(string method, string path, NameValueCollection query, NameValueCollection headers, byte[] contentBytes, string contentType)
         {
-            return new HttpRequestInfo
+            return new HttpRequest
             {
                 Method = method,
                 Headers = headers,

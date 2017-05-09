@@ -202,10 +202,10 @@ namespace HttpMocks.Tests.Integrational
         {
             var paths = new List<string>();
 
-            Func<HttpRequestInfo, HttpResponseInfo> processRequestInfo = request =>
+            Func<HttpRequest, HttpResponse> processRequestInfo = request =>
             {
                 paths.Add(request.Path);
-                return HttpResponseInfo.Create(200);
+                return HttpResponse.Create(200);
             };
 
             using (var httpMock = HttpMocks.New(DefaultMockUrl))
@@ -233,10 +233,10 @@ namespace HttpMocks.Tests.Integrational
         {
             var paths = new List<string>();
 
-            Func<HttpRequestInfo, Task<HttpResponseInfo>> processRequestInfoAsync = request =>
+            Func<HttpRequest, Task<HttpResponse>> processRequestInfoAsync = request =>
             {
                 paths.Add(request.Path);
-                return Task.FromResult(HttpResponseInfo.Create(200));
+                return Task.FromResult(HttpResponse.Create(200));
             };
 
             using (var httpMock = HttpMocks.New(DefaultMockUrl))

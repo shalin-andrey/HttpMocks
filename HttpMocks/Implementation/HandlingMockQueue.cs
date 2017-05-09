@@ -23,14 +23,14 @@ namespace HttpMocks.Implementation
             }
         }
 
-        public HttpRequestMockHandlingInfo Dequeue(HttpRequestInfo httpRequestInfo)
+        public HttpRequestMockHandlingInfo Dequeue(HttpRequest httpRequest)
         {
             lock (handlingInfos)
             {
-                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(httpRequestInfo, httpMockDebugLogger) && i.HasAttempts());
+                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(httpRequest, httpMockDebugLogger) && i.HasAttempts());
                 if (handlingInfo == null)
                 {
-                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(httpRequestInfo, httpMockDebugLogger));
+                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(httpRequest, httpMockDebugLogger));
                 }
 
                 handlingInfo?.IncreaseUsageCount();

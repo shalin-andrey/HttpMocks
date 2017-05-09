@@ -12,7 +12,7 @@ namespace HttpMocks.Whens.RequestPatterns
             this.requestMock = requestMock;
         }
 
-        public bool IsMatch(HttpRequestInfo request, IHttpMockDebugLogger httpMockDebugLogger)
+        public bool IsMatch(HttpRequest request, IHttpMockDebugLogger httpMockDebugLogger)
         {
             var methodIsMatch = requestMock.Method.IsMatch(request.Method);
             var pathIsMatch = requestMock.Path.IsMatch(request.Path);

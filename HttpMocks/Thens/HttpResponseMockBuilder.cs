@@ -8,7 +8,7 @@ namespace HttpMocks.Thens
     {
         private readonly HttpResponseMock httpResponseMock;
 
-        public HttpResponseMockBuilder(int statusCode, Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder = null)
+        public HttpResponseMockBuilder(int statusCode, Func<HttpRequest, Task<HttpResponse>> asyncResponseInfoBuilder = null)
         {
             httpResponseMock = new HttpResponseMock
             {
@@ -23,7 +23,7 @@ namespace HttpMocks.Thens
         {
         }
 
-        public HttpResponseMockBuilder(Func<HttpRequestInfo, Task<HttpResponseInfo>> asyncResponseInfoBuilder)
+        public HttpResponseMockBuilder(Func<HttpRequest, Task<HttpResponse>> asyncResponseInfoBuilder)
             : this(0, asyncResponseInfoBuilder)
         {
         }

@@ -10,11 +10,11 @@ namespace HttpMocks.DebugLoggers
         {
         }
 
-        public virtual void LogHttpRequest(HttpRequestInfo request)
+        public virtual void LogHttpRequest(HttpRequest request)
         {
         }
 
-        public virtual void LogHttpResponse(HttpResponseInfo response)
+        public virtual void LogHttpResponse(HttpResponse response)
         {
         }
 
@@ -26,15 +26,15 @@ namespace HttpMocks.DebugLoggers
         {
         }
 
-        public virtual void LogNotExpected(HttpRequestInfo request)
+        public virtual void LogNotExpected(HttpRequest request)
         {
         }
 
-        public virtual void LogCountSpent(HttpRequestInfo request, int usageCount, int repeatCount)
+        public virtual void LogCountSpent(HttpRequest request, int usageCount, int repeatCount)
         {
         }
 
-        public virtual void LogRequestMatchResult(HttpRequestInfo request, HttpRequestPatternMatchResults matchResults)
+        public virtual void LogRequestMatchResult(HttpRequest request, HttpRequestPatternMatchResults matchResults)
         {
         }
     }

@@ -2,7 +2,7 @@
 {
     internal interface IHandlingMockQueue
     {
-        HttpRequestMockHandlingInfo Dequeue(HttpRequestInfo httpRequestInfo);
+        HttpRequestMockHandlingInfo Dequeue(HttpRequest httpRequest);
         void Enqueue(HttpRequestMock[] httpRequestMocks);
     }
 }

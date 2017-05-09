@@ -101,9 +101,9 @@ namespace HttpMocks.Tests.Unit.Implementation
             handlingInfo.ResponseMock.Should().Be(httpRequestMock.Response);
         }
 
-        private static HttpRequestInfo CreateRequestInfo(string methodPattern, string pathPattern)
+        private static HttpRequest CreateRequestInfo(string methodPattern, string pathPattern)
         {
-            return new HttpRequestInfo
+            return new HttpRequest
             {
                 Method = methodPattern,
                 Path = pathPattern
