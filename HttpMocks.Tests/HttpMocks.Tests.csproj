@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integrational\ContentPatternTests.cs" />
+    <Compile Include="Integrational\HttpMockClusterTests.cs" />
     <Compile Include="Integrational\IntegrationalTestsBase.cs" />
     <Compile Include="Integrational\MethodAndPathTests.cs" />
     <Compile Include="Integrational\MoreThatOneMockTest.cs" />

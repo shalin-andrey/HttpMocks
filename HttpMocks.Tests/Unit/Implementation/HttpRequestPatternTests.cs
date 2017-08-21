@@ -39,7 +39,7 @@ namespace HttpMocks.Tests.Unit.Implementation
                 Method = expectedMethod,
                 Path = pathPattern
             };
-            httpRequestPattern.IsMatch(httpRequestInfo, httpMockDebugLogger.Object).ShouldBeEquivalentTo(expected);
+            httpRequestPattern.IsMatch(httpRequestInfo).ShouldBeEquivalentTo(expected);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace HttpMocks.Tests.Unit.Implementation
                 ContentType = contentType
             };
             
-            httpRequestPattern.IsMatch(httpRequestInfo, httpMockDebugLogger.Object).ShouldBeEquivalentTo(isMatchResult);
+            httpRequestPattern.IsMatch(httpRequestInfo).ShouldBeEquivalentTo(isMatchResult);
         }
     }
 }

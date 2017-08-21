@@ -11,15 +11,15 @@ namespace HttpMocks.Tests.Unit.Implementation
     {
         private StartedHttpMock startedHttpMock;
         private Mock<IHttpListenerWrapper> httpListenerWrapper;
-        private Mock<IHttpMockDebugLogger> httpMockDebugLogger;
+        private Mock<IHandlingMockQueue> handlingMockQueue;
 
         public override void SetUp()
         {
             base.SetUp();
 
             httpListenerWrapper = NewMock<IHttpListenerWrapper>();
-            httpMockDebugLogger = NewMock<IHttpMockDebugLogger>(MockBehavior.Loose);
-            startedHttpMock = new StartedHttpMock(httpListenerWrapper.Object, httpMockDebugLogger.Object);
+            handlingMockQueue = NewMock<IHandlingMockQueue>();
+            startedHttpMock = new StartedHttpMock(httpListenerWrapper.Object, handlingMockQueue.Object);
         }
 
         [Test]

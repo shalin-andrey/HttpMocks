@@ -4,7 +4,6 @@ namespace HttpMocks
 {
     internal interface IHttpMockRunner
     {
-        IStartedHttpMock RunMocks(IMockUrlEnumerator mockUrlEnumerator);
-        void VerifyAll();
+        IStartedHttpMock RunMocks(IMockUrlEnumerator mockUrlEnumerator, IHandlingMockQueue handlingMockQueue);
     }
 }

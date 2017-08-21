@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HttpMocks.Implementation;
+using HttpMocks.Verifications;
 using HttpMocks.Whens;
 using HttpMocks.Whens.RequestPatterns;
 
@@ -9,16 +11,20 @@ namespace HttpMocks
 {
     internal class HttpMock : IHttpMock
     {
-        private readonly IStartedHttpMock startedHttpMock;
+        private readonly IStartedHttpMock[] startedHttpMocks;
         private readonly List<IHttpRequestMockBuilder> internalHttpRequestMockBuilders;
-        
-        internal HttpMock(IStartedHttpMock startedHttpMock)
+        private readonly IHandlingMockQueue handlingMockQueue;
+
+        internal HttpMock(IStartedHttpMock[] startedHttpMocks, IHandlingMockQueue handlingMockQueue)
         {
-            this.startedHttpMock = startedHttpMock;
+            this.startedHttpMocks = startedHttpMocks;
+            this.handlingMockQueue = handlingMockQueue;
+
             internalHttpRequestMockBuilders = new List<IHttpRequestMockBuilder>();
         }
 
-        public Uri MockUri => startedHttpMock.MockUrl;
+        public Uri[] MockUris => startedHttpMocks.Select(x => x.MockUrl).ToArray();
+        public Uri MockUri => MockUris[0];
 
         public IHttpRequestMock WhenRequestGet(string path = null)
         {
@@ -88,12 +94,29 @@ namespace HttpMocks
         public void Run()
         {
             var httpRequestMocks = internalHttpRequestMockBuilders.Select(b => b.Build()).ToArray();
-            startedHttpMock.AppendMocks(httpRequestMocks);
+            handlingMockQueue.Enqueue(httpRequestMocks);
         }
 
         public void Dispose()
         {
             Run();
+        }
+
+        public async Task<VerificationResult[]> StopAsync()
+        {
+            var stopMockTasks = startedHttpMocks
+                .Select(startedHttpMock => startedHttpMock.StopAsync())
+                .ToArray();
+
+            var verificationResults = await Task.WhenAll(stopMockTasks).ConfigureAwait(false);
+            var results = verificationResults.SelectMany(x => x).ToList();
+
+            foreach (var httpRequestMockHandlingInfo in handlingMockQueue.GetNotActual())
+            {
+                results.Add(VerificationResult.Create($"Request {httpRequestMockHandlingInfo.RequestMock} expected, but not actual. Actual count = {httpRequestMockHandlingInfo.UsageCount}, expect count = {httpRequestMockHandlingInfo.RequestMock.Response.RepeatCount}"));
+            }
+
+            return results.ToArray();
         }
 
         private IHttpRequestPathPattern Convert(string path)

@@ -6,12 +6,10 @@ namespace HttpMocks.Implementation
 {
     internal class HandlingMockQueue : IHandlingMockQueue
     {
-        private readonly IHttpMockDebugLogger httpMockDebugLogger;
         private readonly List<HttpRequestMockHandlingInfo> handlingInfos;
 
-        public HandlingMockQueue(IHttpMockDebugLogger httpMockDebugLogger)
+        public HandlingMockQueue()
         {
-            this.httpMockDebugLogger = httpMockDebugLogger;
             handlingInfos = new List<HttpRequestMockHandlingInfo>();
         }
 
@@ -27,10 +25,10 @@ namespace HttpMocks.Implementation
         {
             lock (handlingInfos)
             {
-                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(httpRequest, httpMockDebugLogger) && i.HasAttempts());
+                var handlingInfo = handlingInfos.FirstOrDefault(i => i.RequestPattern.IsMatch(httpRequest) && i.HasAttempts());
                 if (handlingInfo == null)
                 {
-                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(httpRequest, httpMockDebugLogger));
+                    handlingInfo = handlingInfos.LastOrDefault(i => i.RequestPattern.IsMatch(httpRequest));
                 }
 
                 handlingInfo?.IncreaseUsageCount();
@@ -38,10 +36,18 @@ namespace HttpMocks.Implementation
             }
         }
 
+        public HttpRequestMockHandlingInfo[] GetNotActual()
+        {
+            lock (handlingInfos)
+            {
+                return handlingInfos.Where(x => x.HasNotActual()).ToArray();
+            }
+        }
+
         private IEnumerable<HttpRequestMockHandlingInfo> GetRequestMockHandlingInfos(IEnumerable<HttpRequestMock> requestMocks)
         {
             return requestMocks
-                .Select(r => new HttpRequestMockHandlingInfo(new HttpRequestPattern(r), r.Response))
+                .Select(r => new HttpRequestMockHandlingInfo(new HttpRequestPattern(r), r))
                 .ToArray();
         }
     }

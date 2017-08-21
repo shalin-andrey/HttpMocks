@@ -1,4 +1,3 @@
-using HttpMocks.DebugLoggers;
 using HttpMocks.Implementation;
 
 namespace HttpMocks.Whens.RequestPatterns
@@ -12,22 +11,13 @@ namespace HttpMocks.Whens.RequestPatterns
             this.requestMock = requestMock;
         }
 
-        public bool IsMatch(HttpRequest request, IHttpMockDebugLogger httpMockDebugLogger)
+        public bool IsMatch(HttpRequest request)
         {
             var methodIsMatch = requestMock.Method.IsMatch(request.Method);
             var pathIsMatch = requestMock.Path.IsMatch(request.Path);
             var headersIsMatch = requestMock.Headers.IsMatch(request.Headers);
             var queryIsMatch = requestMock.Query.IsMatch(request.Query);
             var contentIsMatch = requestMock.Content.IsMatch(request.ContentBytes, request.ContentType);
-
-            var matchResult = new HttpRequestPatternMatchResults(
-                methodIsMatch,
-                pathIsMatch,
-                queryIsMatch,
-                headersIsMatch,
-                contentIsMatch);
-
-            httpMockDebugLogger.LogRequestMatchResult(request, matchResult);
 
             return methodIsMatch
                 && pathIsMatch

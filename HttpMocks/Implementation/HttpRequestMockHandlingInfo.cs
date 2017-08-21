@@ -5,10 +5,10 @@ namespace HttpMocks.Implementation
 {
     internal class HttpRequestMockHandlingInfo
     {
-        public HttpRequestMockHandlingInfo(HttpRequestPattern requestPattern, HttpResponseMock responseMock)
+        public HttpRequestMockHandlingInfo(HttpRequestPattern requestPattern, HttpRequestMock requestMock)
         {
             RequestPattern = requestPattern;
-            ResponseMock = responseMock;
+            RequestMock = requestMock;
             UsageCount = 0;
         }
 
@@ -19,16 +19,37 @@ namespace HttpMocks.Implementation
 
         public bool HasAttempts()
         {
+            if (ResponseMock.RepeatCount == int.MaxValue)
+            {
+                return true;
+            }
+
             return ResponseMock.RepeatCount > UsageCount;
         }
 
         public bool IsUsageCountValid()
         {
+            if (ResponseMock.RepeatCount == int.MaxValue)
+            {
+                return true;
+            }
+
             return ResponseMock.RepeatCount >= UsageCount;
         }
 
+        public bool HasNotActual()
+        {
+            if (ResponseMock.RepeatCount == int.MaxValue)
+            {
+                return false;
+            }
+
+            return HasAttempts();
+        }
+
         public HttpRequestPattern RequestPattern { get; }
-        public HttpResponseMock ResponseMock { get; }
+        public HttpRequestMock RequestMock { get; }
+        public HttpResponseMock ResponseMock => RequestMock.Response;
         public int UsageCount { get; private set; }
     }
 }

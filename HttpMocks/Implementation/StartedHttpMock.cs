@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using HttpMocks.DebugLoggers;
 using HttpMocks.Implementation.Core;
 using HttpMocks.Verifications;
 
@@ -15,12 +16,12 @@ namespace HttpMocks.Implementation
         private bool stated;
         private readonly Task listenHttpMockTask;
 
-        public StartedHttpMock(IHttpListenerWrapper httpListenerWrapper, IHttpMockDebugLogger httpMockDebugLogger)
+        public StartedHttpMock(IHttpListenerWrapper httpListenerWrapper, IHandlingMockQueue handlingMockQueue)
         {
             this.httpListenerWrapper = httpListenerWrapper;
-            this.httpMockDebugLogger = httpMockDebugLogger;
+            this.handlingMockQueue = handlingMockQueue;
 
-            handlingMockQueue = new HandlingMockQueue(httpMockDebugLogger);
+            httpMockDebugLogger = new ConsoleHttpMockDebugLogger();
             verificationMockResults = new List<VerificationResult>();
             stated = true;
             listenHttpMockTask = StartAsync();

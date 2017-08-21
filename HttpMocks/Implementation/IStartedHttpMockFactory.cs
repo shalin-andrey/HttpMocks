@@ -4,6 +4,6 @@ namespace HttpMocks.Implementation
 {
     internal interface IStartedHttpMockFactory
     {
-        IStartedHttpMock Create(IHttpListenerWrapper httpListenerWrapper, IHttpMockDebugLogger httpMockDebugLogger);
+        IStartedHttpMock Create(IHttpListenerWrapper httpListenerWrapper, IHandlingMockQueue handlingMockQueue);
     }
 }

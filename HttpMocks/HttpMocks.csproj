@@ -48,7 +48,7 @@
     <Compile Include="Exceptions\AssertHttpMockException.cs" />
     <Compile Include="Exceptions\HttpMocksExceptionFactory.cs" />
     <Compile Include="Exceptions\IHttpMocksExceptionFactory.cs" />
-    <Compile Include="HttpMock.cs" />
+    <Compile Include="HttpMockCluster.cs" />
     <Compile Include="HttpMockRepository.cs" />
     <Compile Include="HttpMockRunner.cs" />
     <Compile Include="IHttpMock.cs" />

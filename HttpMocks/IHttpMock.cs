@@ -15,6 +15,7 @@ namespace HttpMocks
 
         void Run();
 
+        Uri[] MockUris { get; }
         Uri MockUri { get; }
     }
 }
