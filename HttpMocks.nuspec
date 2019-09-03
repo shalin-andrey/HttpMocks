@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>HttpMocks</id>
     <version>$version$</version>
     <authors>Shalin Andrey</authors>
     <owners>Shalin Andrey</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
     <description>Library for integration testing. https://github.com/shalin-andrey/HttpMocks</description>
     <tags>HttpMocks Kontur</tags>
   </metadata>
