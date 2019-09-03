@@ -6,8 +6,8 @@
     <authors>Shalin Andrey</authors>
     <owners>Shalin Andrey</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <license type="expression">MIT</license>
     <description>Library for integration testing. https://github.com/shalin-andrey/HttpMocks</description>
+    <license type="expression">MIT</license>
     <tags>HttpMocks Kontur</tags>
   </metadata>
   <files>
