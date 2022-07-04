@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
     <AssemblyTitle>HttpMocks.Tests</AssemblyTitle>
     <Product>HttpMocks.Tests</Product>
     <Copyright>Copyright ©  116</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <TargetFrameworks>net461;net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
