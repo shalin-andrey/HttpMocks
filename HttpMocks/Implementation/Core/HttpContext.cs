@@ -15,7 +15,7 @@ namespace HttpMocks.Implementation.Core
 
         public static HttpContext CreateInvalid()
         {
-            return new HttpContext(null, false);
+            return new HttpContext(null, true);
         }
 
         private HttpContext(HttpListenerContext httpListenerContext, bool isInvalid)
